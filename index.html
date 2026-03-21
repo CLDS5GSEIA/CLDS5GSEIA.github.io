@@ -1,160 +1,106 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Passaporte do Explorador Cultural</title>
 
-<style>
-body {
-  margin:0;
-  font-family: Arial, sans-serif;
-  background:#f4f7fb;
-}
-
-h1 {
-  text-align:center;
-  padding:20px;
-  color:#17324d;
-}
-
-.grid {
-  display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
-  gap:20px;
-  padding:20px;
-}
-
-.card {
-  background:white;
-  border-radius:16px;
-  padding:15px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.08);
-  text-align:center;
-}
-
-.card img {
-  width:100%;
-  height:120px;
-  object-fit:contain;
-}
-
-.country {
-  font-size:20px;
-  font-weight:bold;
-  margin:10px 0;
-}
-
-.btn {
-  display:inline-block;
-  background:#1f4e79;
-  color:white;
-  padding:10px 15px;
-  border-radius:10px;
-  text-decoration:none;
-  margin-top:10px;
-}
-
-.qr {
-  width:80px;
-  margin-top:10px;
-}
-</style>
-</head>
-
+<html><head><meta charset="UTF-8"><style>
+body{font-family:Arial;margin:0;background:#f4f7fb}
+.wrap{max-width:1100px;margin:auto;padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.card{background:#fff;padding:16px;border-radius:12px;text-align:center}
+.btn{display:inline-block;margin-top:10px;background:#1f4e79;color:#fff;padding:10px 14px;border-radius:8px;text-decoration:none}
+img{max-width:100%;border-radius:10px}
+</style></head>
 <body>
-
-<h1>🌍 Passaporte do Explorador Cultural</h1>
-
+<div class="wrap">
+<h1>Passaporte do Explorador Cultural</h1>
+<h2>Planisfério de Culturas do Mundo</h2>
 <div class="grid">
-
-<!-- ORDEM ALFABÉTICA -->
-
-<div class="card">
-  <img src="flags/angola.png">
-  <div class="country">Angola</div>
-  <a href="angola.html" class="btn">Explorar</a>
+    <div class="card">
+        <h3>Portugal</h3>
+        <a class="btn" href="portugal.html">Explorar</a><br>
+    </div>
+    
+    <div class="card">
+        <h3>Brasil</h3>
+        <a class="btn" href="brasil.html">Explorar</a><br>
+    </div>
+    
+    <div class="card">
+        <h3>Angola</h3>
+        <a class="btn" href="angola.html">Explorar</a><br>
+    </div>
+    
+    <div class="card">
+        <h3>Cabo Verde</h3>
+        <a class="btn" href="caboverde.html">Explorar</a><br>
+    </div>
+    
+    <div class="card">
+        <h3>China</h3>
+        <a class="btn" href="china.html">Explorar</a><br>
+    </div>
+    
+    <div class="card">
+        <h3>Colômbia</h3>
+        <a class="btn" href="colombia.html">Explorar</a><br>
+    </div>
+    
+    <div class="card">
+        <h3>Estados Unidos</h3>
+        <a class="btn" href="eua.html">Explorar</a><br>
+    </div>
+    
+    <div class="card">
+        <h3>França</h3>
+        <a class="btn" href="franca.html">Explorar</a><br>
+    </div>
+    
+    <div class="card">
+        <h3>Guiné-Bissau</h3>
+        <a class="btn" href="guinebissau.html">Explorar</a><br>
+    </div>
+    
+    <div class="card">
+        <h3>Índia</h3>
+        <a class="btn" href="india.html">Explorar</a><br>
+    </div>
+    
+    <div class="card">
+        <h3>São Tomé e Príncipe</h3>
+        <a class="btn" href="saotome.html">Explorar</a><br>
+    </div>
+    
+    <div class="card">
+        <h3>Síria</h3>
+        <a class="btn" href="siria.html">Explorar</a><br>
+    </div>
+    
+    <div class="card">
+        <h3>Alemanha</h3>
+        <a class="btn" href="alemanha.html">Explorar</a><br>
+    </div>
+    
+    <div class="card">
+        <h3>Liechtenstein</h3>
+        <a class="btn" href="liechtenstein.html">Explorar</a><br>
+    </div>
+    
+    <div class="card">
+        <h3>Ucrânia</h3>
+        <a class="btn" href="ucrania.html">Explorar</a><br>
+    </div>
+    
+    <div class="card">
+        <h3>Moçambique</h3>
+        <a class="btn" href="mocambique.html">Explorar</a><br>
+    </div>
+    
+    <div class="card">
+        <h3>Inglaterra</h3>
+        <a class="btn" href="inglaterra.html">Explorar</a><br>
+    </div>
+    
+    <div class="card">
+        <h3>Israel</h3>
+        <a class="btn" href="israel.html">Explorar</a><br>
+    </div>
+    </div>
 </div>
-
-<div class="card">
-  <img src="flags/china.png">
-  <div class="country">China</div>
-  <a href="china.html" class="btn">Explorar</a>
-</div>
-
-<div class="card">
-  <img src="flags/colombia.png">
-  <div class="country">Colômbia</div>
-  <a href="colombia.html" class="btn">Explorar</a>
-</div>
-
-<div class="card">
-  <img src="flags/eua.png">
-  <div class="country">Estados Unidos</div>
-  <a href="eua.html" class="btn">Explorar</a>
-</div>
-
-<div class="card">
-  <img src="flags/franca.png">
-  <div class="country">França</div>
-  <a href="franca.html" class="btn">Explorar</a>
-</div>
-
-<div class="card">
-  <img src="flags/guinebissau.png">
-  <div class="country">Guiné-Bissau</div>
-  <a href="guinebissau.html" class="btn">Explorar</a>
-</div>
-
-<div class="card">
-  <img src="flags/india.png">
-  <div class="country">Índia</div>
-  <a href="india.html" class="btn">Explorar</a>
-</div>
-
-<div class="card">
-  <img src="flags/israel.png">
-  <div class="country">Israel</div>
-  <a href="israel.html" class="btn">Explorar</a>
-</div>
-
-<div class="card">
-  <img src="flags/liechtenstein.png">
-  <div class="country">Liechtenstein</div>
-  <a href="liechtenstein.html" class="btn">Explorar</a>
-</div>
-
-<div class="card">
-  <img src="flags/mocambique.png">
-  <div class="country">Moçambique</div>
-  <a href="mocambique.html" class="btn">Explorar</a>
-</div>
-
-<div class="card">
-  <img src="flags/portugal.png">
-  <div class="country">Portugal</div>
-  <a href="portugal.html" class="btn">Explorar</a>
-</div>
-
-<div class="card">
-  <img src="flags/saotome.png">
-  <div class="country">São Tomé e Príncipe</div>
-  <a href="saotome.html" class="btn">Explorar</a>
-</div>
-
-<div class="card">
-  <img src="flags/siria.png">
-  <div class="country">Síria</div>
-  <a href="siria.html" class="btn">Explorar</a>
-</div>
-
-<div class="card">
-  <img src="flags/ucrania.png">
-  <div class="country">Ucrânia</div>
-  <a href="ucrania.html" class="btn">Explorar</a>
-</div>
-
-</div>
-
-</body>
-</html>
+</body></html>
