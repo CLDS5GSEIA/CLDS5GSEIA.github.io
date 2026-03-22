@@ -176,9 +176,11 @@ function checkQuiz(){
 
       <div class="panel quiz" style="margin-top:16px">
         <div class="label">Quiz</div>
+        <div class="value" style="font-size:18px">Desafio de Conhecimento Intercultural</div>
 
         <div class="qblock">
-          <div class="value">1. Qual é a capital da Argentina?</div>
+          <div class="label">Pergunta 1</div>
+          <div class="value" style="font-size:18px">Qual é a capital da Argentina?</div>
           <div class="answers">
             <label><input type="radio" name="q1" value="0"> Santiago</label>
             <label><input type="radio" name="q1" value="1"> Buenos Aires</label>
@@ -188,7 +190,8 @@ function checkQuiz(){
         </div>
 
         <div class="qblock">
-          <div class="value">2. Qual destas tradições está associada à Argentina?</div>
+          <div class="label">Pergunta 2</div>
+          <div class="value" style="font-size:18px">Qual destas tradições está associada à Argentina?</div>
           <div class="answers">
             <label><input type="radio" name="q2" value="0"> Flamenco</label>
             <label><input type="radio" name="q2" value="1"> Tango</label>
@@ -198,7 +201,8 @@ function checkQuiz(){
         </div>
 
         <div class="qblock">
-          <div class="value">3. Qual destas bebidas é tradicional na Argentina?</div>
+          <div class="label">Pergunta 3</div>
+          <div class="value" style="font-size:18px">Qual destas bebidas é tradicional na Argentina?</div>
           <div class="answers">
             <label><input type="radio" name="q3" value="0"> Chá verde</label>
             <label><input type="radio" name="q3" value="1"> Mate</label>
@@ -207,10 +211,11 @@ function checkQuiz(){
           </div>
         </div>
 
-        <button class="submit" onclick="checkQuiz()">Verificar respostas</button>
-        <div style="margin-top:12px">
-          <a class="btn" href="index.html#paises">Voltar aos países</a>
-        </div>
+        <div class="submit"><button class="btn" onclick="checkQuiz()">Verificar respostas</button></div>
+      </div>
+
+      <div style="margin-top:16px">
+        <a class="btn" href="index.html#paises">← Voltar aos países</a>
       </div>
     </div>
   </div>
