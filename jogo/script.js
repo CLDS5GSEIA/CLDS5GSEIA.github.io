@@ -178,7 +178,13 @@ function getFirstLastName(fullName) {
   if (parts.length <= 1) return fullName;
   return `${parts[0]} ${parts[parts.length - 1]}`;
 }
-
+function updateActiveSessionLabel() {
+  if (activeSessionData && activeSessionData.name) {
+    activeSessionNameEl.textContent = `${activeSessionData.name} (ativa)`;
+  } else {
+    activeSessionNameEl.textContent = "Sem sessão ativa";
+  }
+}
 function renderQuestion() {
   const q = questions[currentQuestionIndex];
   selectedAnswerIndex = null;
