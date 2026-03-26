@@ -1,3 +1,4 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore,
   doc,
@@ -12,13 +13,14 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+/* COLOCA AQUI O TEU firebaseConfig EXACTAMENTE COMO ESTÁ NA CONSOLA */
 const firebaseConfig = {
-  apiKey: "AIzaSyDmf-ymZs2Ew0WeV1Gh_V7jAZwGQDCOU90",
-  authDomain: "ranking-para-jogo.firebaseapp.com",
-  projectId: "ranking-para-jogo",
-  storageBucket: "ranking-para-jogo.firebasestorage.app",
-  messagingSenderId: "1056707148499",
-  appId: "1:1056707148499:web:43dabe6b71f24048c0f226"
+  apiKey: "COLOCA_A_TUA_API_KEY",
+  authDomain: "COLOCA_O_TEU_AUTH_DOMAIN",
+  projectId: "COLOCA_O_TEU_PROJECT_ID",
+  storageBucket: "COLOCA_O_TEU_STORAGE_BUCKET",
+  messagingSenderId: "COLOCA_O_TEU_MESSAGING_SENDER_ID",
+  appId: "COLOCA_O_TEU_APP_ID"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -366,14 +368,6 @@ async function loadActiveSession() {
   subscribeRanking();
 }
 
-function updateActiveSessionLabel() {
-  if (activeSessionData && activeSessionData.name) {
-    activeSessionNameEl.textContent = `${activeSessionData.name} (ativa)`;
-  } else {
-    activeSessionNameEl.textContent = "Sem sessão ativa";
-  }
-}
-
 function subscribeRanking() {
   if (rankingUnsubscribe) rankingUnsubscribe();
 
@@ -384,22 +378,25 @@ function subscribeRanking() {
 
   const participantsRef = collection(db, "sessions", activeSessionId, "participants");
 
-  rankingUnsubscribe = onSnapshot(participantsRef, (snapshot) => {
-    const data = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+  rankingUnsubscribe = onSnapshot(
+    participantsRef,
+    (snapshot) => {
+      const data = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
 
-    data.sort((a, b) => {
-      if ((b.score || 0) !== (a.score || 0)) return (b.score || 0) - (a.score || 0);
-      if ((a.time || 0) !== (b.time || 0)) return (a.time || 0) - (b.time || 0);
-      return (a.timestampMs || 0) - (b.timestampMs || 0);
-    });
+      data.sort((a, b) => {
+        if ((b.score || 0) !== (a.score || 0)) return (b.score || 0) - (a.score || 0);
+        if ((a.time || 0) !== (b.time || 0)) return (a.time || 0) - (b.time || 0);
+        return (a.timestampMs || 0) - (b.timestampMs || 0);
+      });
 
-    renderRankingData(data);
-  }, (error) => {
-    console.error("Erro ao ler ranking:", error);
-    alert("Erro ao carregar ranking. Vê a consola do browser.");
-  });
+      renderRankingData(data);
+    },
+    (error) => {
+      console.error("Erro ao ler ranking:", error);
+      alert("Erro ao carregar ranking. Vê a consola do browser.");
+    }
+  );
 }
-
 
 function renderRankingData(data) {
   top3.innerHTML = "";
@@ -430,9 +427,7 @@ function renderRankingData(data) {
 }
 
 async function saveParticipantToActiveSession(participant) {
-  if (!activeSessionId) {
-    throw new Error("Sem sessão ativa.");
-  }
+  if (!activeSessionId) throw new Error("Sem sessão ativa.");
 
   await addDoc(collection(db, "sessions", activeSessionId, "participants"), {
     ...participant,
@@ -748,7 +743,13 @@ adminTrigger.addEventListener("click", () => {
   }
 });
 
-fillCountries();
+async function init() {
+  fillCountries();
+  await ensureSharedDefaultSession();
+  await loadActiveSession();
+}
 
-await ensureSharedDefaultSession();
-await loadActiveSession();
+init().catch((error) => {
+  console.error("Erro ao iniciar jogo:", error);
+  alert("Erro ao iniciar ligação ao Firebase. Vê a consola.");
+});
