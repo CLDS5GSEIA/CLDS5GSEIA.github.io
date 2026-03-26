@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Challenge Intercultural</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- ECRÃ INICIAL -->
+    <section id="screen-home" class="screen active">
+      <header class="hero" style="background-image: linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)), url('assets/banner.jpg');">
+        <div class="hero-content">
+          <h1>Quiz Challenge Intercultural</h1>
+          <p class="subtitle">Testa os teus conhecimentos sobre culturas do mundo.</p>
+          <p class="prize">Os 3 participantes com melhor classificação serão premiados.</p>
+
+          <div class="hero-actions">
+            <button class="btn btn-primary" id="btn-start">Começar</button>
+            <button class="btn btn-secondary" id="btn-rules">Ver regras</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="container">
+        <div class="cards-row">
+          <div class="info-card">
+            <h3>15 perguntas</h3>
+            <p>Dificuldade progressiva.</p>
+          </div>
+          <div class="info-card">
+            <h3>Tempo cronometrado</h3>
+            <p>O desempate considera o tempo total.</p>
+          </div>
+          <div class="info-card">
+            <h3>Ranking automático</h3>
+            <p>Top 3 e classificação geral no site.</p>
+          </div>
+        </div>
+
+        <section id="rules-box" class="panel hidden">
+          <h2>Regras</h2>
+          <ul>
+            <li>Cada participante joga uma única vez.</li>
+            <li>O jogo tem 15 perguntas.</li>
+            <li>As respostas submetidas não podem ser alteradas.</li>
+            <li>Durante o jogo não é mostrado se acertou ou errou.</li>
+            <li>No final, poderás ver as respostas certas e erradas.</li>
+            <li>Critérios de desempate: pontuação, tempo total, desempenho nas perguntas finais e submissão.</li>
+            <li>Os 3 participantes com melhor classificação serão premiados.</li>
+          </ul>
+        </section>
+      </main>
+    </section>
+
+    <!-- REGISTO -->
+    <section id="screen-register" class="screen">
+      <main class="container narrow">
+        <div class="panel">
+          <h2>Registo do participante</h2>
+          <p class="muted">Preenche os teus dados para participar.</p>
+
+          <form id="register-form">
+            <label>Nome completo
+              <input type="text" id="fullName" required />
+            </label>
+
+            <label>Data de nascimento
+              <input type="date" id="birthDate" required />
+            </label>
+
+            <label>Escolaridade
+              <select id="education" required>
+                <option value="">Selecionar...</option>
+                <option>Sem escolaridade</option>
+                <option>1.º Ciclo</option>
+                <option>2.º Ciclo</option>
+                <option>3.º Ciclo</option>
+                <option>Ensino Secundário</option>
+                <option>Ensino Profissional</option>
+                <option>CET / Pós-secundário</option>
+                <option>Licenciatura</option>
+                <option>Mestrado</option>
+                <option>Doutoramento</option>
+                <option>Outro</option>
+              </select>
+            </label>
+
+            <label>Local de residência
+              <input type="text" id="residence" required />
+            </label>
+
+            <label>Nacionalidade
+              <input list="countries" id="nationality" required placeholder="Escreve para pesquisar..." />
+              <datalist id="countries"></datalist>
+            </label>
+
+            <div class="rgpd-box">
+              <label class="checkbox-row">
+                <input type="checkbox" id="rgpdConsent" required />
+                <span>
+                  Autorizo o tratamento dos dados fornecidos exclusivamente para participação,
+                  classificação e divulgação dos resultados desta atividade, podendo os resultados
+                  ser divulgados nos meios institucionais da organização, incluindo website e redes sociais.
+                </span>
+              </label>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" id="btn-back-home">Voltar</button>
+              <button type="submit" class="btn btn-primary">Iniciar jogo</button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </section>
+
+    <!-- ECRÃ DO JOGO -->
+    <section id="screen-game" class="screen">
+      <main class="container narrow">
+        <div class="game-topbar">
+          <div class="game-title">Quiz Challenge Intercultural</div>
+          <div class="timer">Tempo total: <span id="timer-display">00:00</span></div>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-label">Pergunta <span id="current-question-number">1</span> de 15</div>
+          <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill"></div>
+          </div>
+        </div>
+
+        <div class="question-actions-top">
+          <button class="btn btn-secondary" id="btn-swap-question">Mudar pergunta</button>
+        </div>
+
+        <div class="panel">
+          <div class="question-label">Pergunta <span id="question-number-inside">1</span></div>
+          <h2 id="question-text"></h2>
+
+          <div id="answers-container" class="answers"></div>
+
+          <div class="form-actions">
+            <button class="btn btn-primary" id="btn-confirm-answer">Confirmar resposta</button>
+          </div>
+        </div>
+      </main>
+    </section>
+
+    <!-- ECRÃ FINAL -->
+    <section id="screen-result" class="screen">
+      <main class="container narrow">
+        <div class="panel">
+          <h2>Terminaste o Quiz Challenge Intercultural!</h2>
+          <p><strong>Pontuação final:</strong> <span id="final-score">0</span> pontos</p>
+          <p><strong>Tempo total:</strong> <span id="final-time">00:00</span></p>
+          <p class="muted">Obrigado pela tua participação. Consulta abaixo o teu desempenho e o ranking geral.</p>
+
+          <div class="form-actions">
+            <button class="btn btn-primary" id="btn-view-ranking">Ver ranking</button>
+            <button class="btn btn-secondary" id="btn-restart">Voltar ao início</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Revisão das respostas</h3>
+          <div id="review-container"></div>
+        </div>
+      </main>
+    </section>
+
+    <!-- RANKING -->
+    <section id="screen-ranking" class="screen">
+      <main class="container narrow">
+        <div class="panel">
+          <h2>Ranking Geral</h2>
+          <p class="muted">Classificação automática com base na pontuação e no tempo total.</p>
+
+          <div id="top3" class="top3-grid"></div>
+
+          <h3>Classificação geral</h3>
+          <div class="ranking-table-wrap">
+            <table class="ranking-table">
+              <thead>
+                <tr>
+                  <th>Pos.</th>
+                  <th>Nome</th>
+                  <th>Pontos</th>
+                  <th>Tempo</th>
+                </tr>
+              </thead>
+              <tbody id="ranking-body"></tbody>
+            </table>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn-secondary" id="btn-ranking-home">Voltar ao início</button>
+          </div>
+        </div>
+      </main>
+    </section>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
