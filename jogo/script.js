@@ -789,7 +789,16 @@ function openAdminMenu() {
 }
 
 btnRules.addEventListener("click", () => {
-  rulesBox.classList.toggle("hidden");
+  const isHidden = rulesBox.classList.contains("hidden");
+
+  if (isHidden) {
+    rulesBox.classList.remove("hidden");
+    setTimeout(() => {
+      rulesBox.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  } else {
+    rulesBox.classList.add("hidden");
+  }
 });
 
 btnStart.addEventListener("click", () => {
