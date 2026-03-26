@@ -59,34 +59,28 @@ body {
   display: block;
   width: 100%;
   height: auto;
+  max-height: 520px;
+  object-fit: contain;
 }
 
 .home-intro {
-  margin-top: 24px;
+  margin-top: 18px;
   text-align: center;
   padding: 0;
 }
 
 .title-image {
   display: block;
-  width: min(100%, 1200px);
+  width: min(100%, 1100px);
   height: auto;
-  margin: 0 auto 18px;
-}
-
-.subtitle {
-  font-size: clamp(20px, 3vw, 36px);
-  line-height: 1.2;
-  font-weight: 700;
-  color: #3d3bb3;
-  margin: 0 0 18px;
+  margin: 0 auto 10px;
 }
 
 .prize {
   font-size: clamp(16px, 2vw, 26px);
   font-weight: 500;
   color: #222;
-  margin: 0 0 26px;
+  margin: 0 0 22px;
 }
 
 .hero-actions,
@@ -316,13 +310,13 @@ input[list] {
     align-items: flex-start;
   }
 
+  .hero-image {
+    max-height: 360px;
+  }
+
   .title-image {
     width: 100%;
     max-width: 900px;
-  }
-
-  .subtitle {
-    font-size: 24px;
   }
 
   .prize {
@@ -353,12 +347,12 @@ input[list] {
 }
 
 @media (max-width: 600px) {
-  .title-image {
-    width: 100%;
+  .hero-image {
+    max-height: 240px;
   }
 
-  .subtitle {
-    font-size: 18px;
+  .title-image {
+    width: 100%;
   }
 
   .prize {
