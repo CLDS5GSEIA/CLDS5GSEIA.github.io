@@ -24,256 +24,28 @@ const countries = [
 ];
 
 const baseQuestions = [
-  {
-    id: "F6",
-    level: "easy",
-    points: 10,
-    text: "O que significa interculturalidade?",
-    answers: [
-      "A convivência e interação respeitosa entre culturas diferentes",
-      "A substituição de uma cultura por outra",
-      "A separação total entre grupos culturais",
-      "A existência de uma única cultura dominante"
-    ],
-    correct: 0
-  },
-  {
-    id: "F7",
-    level: "easy",
-    points: 10,
-    text: "Num contexto intercultural, qual destas atitudes é mais adequada?",
-    answers: [
-      "Respeitar diferenças culturais e promover diálogo",
-      "Ignorar todas as diferenças culturais",
-      "Obrigar todos a seguir os mesmos costumes",
-      "Evitar o contacto entre pessoas de origens diferentes"
-    ],
-    correct: 0
-  },
-  {
-    id: "F8",
-    level: "easy",
-    points: 10,
-    text: "A diversidade cultural pode ser entendida como:",
-    answers: [
-      "Um obstáculo ao convívio",
-      "Uma riqueza que amplia perspetivas e aprendizagens",
-      "Um problema a evitar",
-      "Uma realidade sem importância social"
-    ],
-    correct: 1
-  },
-  {
-    id: "M1",
-    level: "medium",
-    points: 20,
-    text: "Qual destas personalidades está associada à luta contra o apartheid na África do Sul?",
-    answers: [
-      "Martin Luther King Jr.",
-      "Nelson Mandela",
-      "Amílcar Cabral",
-      "Yasser Arafat"
-    ],
-    correct: 1
-  },
-  {
-    id: "M2",
-    level: "medium",
-    points: 20,
-    text: "Qual destas instituições está mais diretamente associada à proteção internacional dos direitos das crianças?",
-    answers: [
-      "UNESCO",
-      "UNICEF",
-      "ACNUR",
-      "OIM"
-    ],
-    correct: 1
-  },
-  {
-    id: "M4",
-    level: "medium",
-    points: 20,
-    text: "Qual destas personalidades está mais associada à Argentina?",
-    answers: [
-      "Eva Perón",
-      "Frida Kahlo",
-      "Simón Bolívar",
-      "Pablo Neruda"
-    ],
-    correct: 0
-  },
-  {
-    id: "M7",
-    level: "medium",
-    points: 20,
-    text: "Qual destes países tem a maior população?",
-    answers: [
-      "Marrocos",
-      "Argentina",
-      "Venezuela",
-      "Portugal"
-    ],
-    correct: 1
-  },
-  {
-    id: "M8",
-    level: "medium",
-    points: 20,
-    text: "Qual destes países tem um Prémio Nobel da Literatura?",
-    answers: [
-      "Chile",
-      "Venezuela",
-      "Palestina",
-      "Marrocos"
-    ],
-    correct: 0
-  },
-  {
-    id: "D2",
-    level: "hard",
-    points: 30,
-    text: "Qual destes países tem o islamismo como religião maioritária?",
-    answers: [
-      "Índia",
-      "Bangladesh",
-      "Nepal",
-      "China"
-    ],
-    correct: 1
-  },
-  {
-    id: "D3",
-    level: "hard",
-    points: 30,
-    text: "Qual destes países tem mais línguas oficiais reconhecidas?",
-    answers: [
-      "Bélgica",
-      "Suíça",
-      "África do Sul",
-      "Canadá"
-    ],
-    correct: 2
-  },
-  {
-    id: "D7",
-    level: "hard",
-    points: 30,
-    text: "Qual destas personalidades está corretamente associada ao respetivo país?",
-    answers: [
-      "Pablo Neruda — Chile",
-      "Simón Bolívar — Argentina",
-      "Amílcar Cabral — Marrocos",
-      "Eva Perón — Venezuela"
-    ],
-    correct: 0
-  },
-  {
-    id: "D9",
-    level: "hard",
-    points: 30,
-    text: "Qual destas combinações está correta?",
-    answers: [
-      "Chile — Pablo Neruda — poesia",
-      "Chile — Simón Bolívar — teatro",
-      "Chile — Eva Perón — literatura",
-      "Chile — Martin Luther King Jr. — ensaio político"
-    ],
-    correct: 0
-  },
-  {
-    id: "MD13",
-    level: "very_hard",
-    points: 50,
-    text: "Que país já venceu um Prémio Nobel da Medicina?",
-    answers: [
-      "Espanha",
-      "Itália",
-      "Portugal",
-      "Grécia"
-    ],
-    correct: 2
-  },
-  {
-    id: "MD14",
-    level: "very_hard",
-    points: 50,
-    text: "Guerra e Paz, uma das mais importantes obras da literatura mundial, foi escrita por quem?",
-    answers: [
-      "Ernest Hemingway",
-      "Fiódor Dostoiévski",
-      "Victor Hugo",
-      "Liev Tolstói"
-    ],
-    correct: 3
-  },
-  {
-    id: "MD15",
-    level: "very_hard",
-    points: 50,
-    text: "Qual destas personalidades está corretamente associada à Índia?",
-    answers: [
-      "Rabindranath Tagore",
-      "Muhammad Iqbal",
-      "Premchand",
-      "Bankim Chandra Chattopadhyay"
-    ],
-    correct: 0
-  }
+  { id:"F6", level:"easy", points:10, text:"O que significa interculturalidade?", answers:["A convivência e interação respeitosa entre culturas diferentes","A substituição de uma cultura por outra","A separação total entre grupos culturais","A existência de uma única cultura dominante"], correct:0 },
+  { id:"F7", level:"easy", points:10, text:"Num contexto intercultural, qual destas atitudes é mais adequada?", answers:["Respeitar diferenças culturais e promover diálogo","Ignorar todas as diferenças culturais","Obrigar todos a seguir os mesmos costumes","Evitar o contacto entre pessoas de origens diferentes"], correct:0 },
+  { id:"F8", level:"easy", points:10, text:"A diversidade cultural pode ser entendida como:", answers:["Um obstáculo ao convívio","Uma riqueza que amplia perspetivas e aprendizagens","Um problema a evitar","Uma realidade sem importância social"], correct:1 },
+  { id:"M1", level:"medium", points:20, text:"Qual destas personalidades está associada à luta contra o apartheid na África do Sul?", answers:["Martin Luther King Jr.","Nelson Mandela","Amílcar Cabral","Yasser Arafat"], correct:1 },
+  { id:"M2", level:"medium", points:20, text:"Qual destas instituições está mais diretamente associada à proteção internacional dos direitos das crianças?", answers:["UNESCO","UNICEF","ACNUR","OIM"], correct:1 },
+  { id:"M4", level:"medium", points:20, text:"Qual destas personalidades está mais associada à Argentina?", answers:["Eva Perón","Frida Kahlo","Simón Bolívar","Pablo Neruda"], correct:0 },
+  { id:"M7", level:"medium", points:20, text:"Qual destes países tem a maior população?", answers:["Marrocos","Argentina","Venezuela","Portugal"], correct:1 },
+  { id:"M8", level:"medium", points:20, text:"Qual destes países tem um Prémio Nobel da Literatura?", answers:["Chile","Venezuela","Palestina","Marrocos"], correct:0 },
+  { id:"D2", level:"hard", points:30, text:"Qual destes países tem o islamismo como religião maioritária?", answers:["Índia","Bangladesh","Nepal","China"], correct:1 },
+  { id:"D3", level:"hard", points:30, text:"Qual destes países tem mais línguas oficiais reconhecidas?", answers:["Bélgica","Suíça","África do Sul","Canadá"], correct:2 },
+  { id:"D7", level:"hard", points:30, text:"Qual destas personalidades está corretamente associada ao respetivo país?", answers:["Pablo Neruda — Chile","Simón Bolívar — Argentina","Amílcar Cabral — Marrocos","Eva Perón — Venezuela"], correct:0 },
+  { id:"D9", level:"hard", points:30, text:"Qual destas combinações está correta?", answers:["Chile — Pablo Neruda — poesia","Chile — Simón Bolívar — teatro","Chile — Eva Perón — literatura","Chile — Martin Luther King Jr. — ensaio político"], correct:0 },
+  { id:"MD13", level:"very_hard", points:50, text:"Que país já venceu um Prémio Nobel da Medicina?", answers:["Espanha","Itália","Portugal","Grécia"], correct:2 },
+  { id:"MD14", level:"very_hard", points:50, text:"Guerra e Paz, uma das mais importantes obras da literatura mundial, foi escrita por quem?", answers:["Ernest Hemingway","Fiódor Dostoiévski","Victor Hugo","Liev Tolstói"], correct:3 },
+  { id:"MD15", level:"very_hard", points:50, text:"Qual destas personalidades está corretamente associada à Índia?", answers:["Rabindranath Tagore","Muhammad Iqbal","Premchand","Bankim Chandra Chattopadhyay"], correct:0 }
 ];
 
 const reserves = {
-  easy: {
-    id: "F9",
-    level: "easy",
-    points: 10,
-    text: "Qual destas práticas favorece melhor a inclusão num ambiente intercultural?",
-    answers: [
-      "Valorizar diferentes línguas, tradições e experiências",
-      "Escolher apenas uma referência cultural para todos",
-      "Evitar qualquer tema cultural",
-      "Separar grupos por nacionalidade"
-    ],
-    correct: 0
-  },
-  medium: {
-    id: "M6",
-    level: "medium",
-    points: 20,
-    text: "Qual destas personalidades está mais associada à Venezuela?",
-    answers: [
-      "Simón Bolívar",
-      "José Martí",
-      "Benito Juárez",
-      "José de San Martín"
-    ],
-    correct: 0
-  },
-  hard: {
-    id: "RD2",
-    level: "hard",
-    points: 30,
-    text: "Qual destes países utiliza o dirham como moeda oficial?",
-    answers: [
-      "Marrocos",
-      "Tunísia",
-      "Argélia",
-      "Egito"
-    ],
-    correct: 0
-  },
-  very_hard: {
-    id: "MD6",
-    level: "very_hard",
-    points: 50,
-    text: "Qual destes países tem um Prémio Nobel da Literatura?",
-    answers: [
-      "Portugal",
-      "Argentina",
-      "Venezuela",
-      "Marrocos"
-    ],
-    correct: 0
-  }
+  easy: { id:"F9", level:"easy", points:10, text:"Qual destas práticas favorece melhor a inclusão num ambiente intercultural?", answers:["Valorizar diferentes línguas, tradições e experiências","Escolher apenas uma referência cultural para todos","Evitar qualquer tema cultural","Separar grupos por nacionalidade"], correct:0 },
+  medium: { id:"M6", level:"medium", points:20, text:"Qual destas personalidades está mais associada à Venezuela?", answers:["Simón Bolívar","José Martí","Benito Juárez","José de San Martín"], correct:0 },
+  hard: { id:"RD2", level:"hard", points:30, text:"Qual destes países utiliza o dirham como moeda oficial?", answers:["Marrocos","Tunísia","Argélia","Egito"], correct:0 },
+  very_hard: { id:"MD6", level:"very_hard", points:50, text:"Qual destes países tem um Prémio Nobel da Literatura?", answers:["Portugal","Argentina","Venezuela","Marrocos"], correct:0 }
 };
 
 let questions = [];
@@ -303,6 +75,7 @@ const rulesBox = document.getElementById("rules-box");
 
 const btnStart = document.getElementById("btn-start");
 const btnRules = document.getElementById("btn-rules");
+const btnHomeRanking = document.getElementById("btn-home-ranking");
 const btnBackHome = document.getElementById("btn-back-home");
 const registerForm = document.getElementById("register-form");
 const btnConfirmAnswer = document.getElementById("btn-confirm-answer");
@@ -329,29 +102,11 @@ const audienceResults = document.getElementById("audience-results");
 const activeSessionNameEl = document.getElementById("active-session-name");
 const adminTrigger = document.getElementById("admin-trigger");
 
-function cloneQuestions() {
-  return JSON.parse(JSON.stringify(baseQuestions));
-}
-
-function showScreen(name) {
-  Object.values(screens).forEach(screen => screen.classList.remove("active"));
-  screens[name].classList.add("active");
-}
-
-function formatTime(totalSeconds) {
-  const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
-  const seconds = (totalSeconds % 60).toString().padStart(2, "0");
-  return `${minutes}:${seconds}`;
-}
-
-function getElapsedSeconds() {
-  if (!startTimestamp) return 0;
-  return Math.floor((Date.now() - startTimestamp) / 1000);
-}
-
-function updateTimer() {
-  timerDisplay.textContent = formatTime(getElapsedSeconds());
-}
+function cloneQuestions() { return JSON.parse(JSON.stringify(baseQuestions)); }
+function showScreen(name) { Object.values(screens).forEach(screen => screen.classList.remove("active")); screens[name].classList.add("active"); }
+function formatTime(totalSeconds) { const m = Math.floor(totalSeconds / 60).toString().padStart(2,"0"); const s = (totalSeconds % 60).toString().padStart(2,"0"); return `${m}:${s}`; }
+function getElapsedSeconds() { if (!startTimestamp) return 0; return Math.floor((Date.now() - startTimestamp) / 1000); }
+function updateTimer() { timerDisplay.textContent = formatTime(getElapsedSeconds()); }
 
 function fillCountries() {
   countries.forEach(country => {
@@ -369,25 +124,10 @@ function getTodayPT() {
   return `${day}/${month}/${year}`;
 }
 
-function getSessions() {
-  return JSON.parse(localStorage.getItem("quizSessions") || "[]");
-}
-
-function saveSessions(sessions) {
-  localStorage.setItem("quizSessions", JSON.stringify(sessions));
-}
-
-function getActiveSessionId() {
-  return localStorage.getItem("quizActiveSessionId");
-}
-
-function setActiveSessionId(id) {
-  if (id) {
-    localStorage.setItem("quizActiveSessionId", id);
-  } else {
-    localStorage.removeItem("quizActiveSessionId");
-  }
-}
+function getSessions() { return JSON.parse(localStorage.getItem("quizSessions") || "[]"); }
+function saveSessions(sessions) { localStorage.setItem("quizSessions", JSON.stringify(sessions)); }
+function getActiveSessionId() { return localStorage.getItem("quizActiveSessionId"); }
+function setActiveSessionId(id) { if (id) localStorage.setItem("quizActiveSessionId", id); else localStorage.removeItem("quizActiveSessionId"); }
 
 function ensureDefaultSession() {
   let sessions = getSessions();
@@ -416,11 +156,7 @@ function getActiveSession() {
 
 function updateActiveSessionLabel() {
   const session = getActiveSession();
-  if (session) {
-    activeSessionNameEl.textContent = `${session.name} (ativa)`;
-  } else {
-    activeSessionNameEl.textContent = "Sem sessão ativa";
-  }
+  activeSessionNameEl.textContent = session ? `${session.name} (ativa)` : "Sem sessão ativa";
 }
 
 function getFirstLastName(fullName) {
@@ -457,15 +193,10 @@ function renderQuestion() {
 }
 
 function swapCurrentQuestion() {
-  if (swapUsed) {
-    alert("Já utilizaste a ajuda de mudar pergunta.");
-    return;
-  }
-
+  if (swapUsed) return alert("Já utilizaste a ajuda de mudar pergunta.");
   const current = questions[currentQuestionIndex];
   const reserve = reserves[current.level];
   if (!reserve) return;
-
   questions[currentQuestionIndex] = JSON.parse(JSON.stringify(reserve));
   swapUsed = true;
   btnSwapQuestion.disabled = true;
@@ -473,39 +204,27 @@ function swapCurrentQuestion() {
 }
 
 function apply5050() {
-  if (fiftyUsed) {
-    alert("Já utilizaste a ajuda 50:50.");
-    return;
-  }
-
+  if (fiftyUsed) return alert("Já utilizaste a ajuda 50:50.");
   const q = questions[currentQuestionIndex];
   const wrongIndexes = q.answers.map((_, i) => i).filter(i => i !== q.correct);
-  const shuffle = wrongIndexes.sort(() => Math.random() - 0.5);
-  const toRemove = shuffle.slice(0, 2);
+  const toRemove = wrongIndexes.sort(() => Math.random() - 0.5).slice(0, 2);
 
   document.querySelectorAll(".answer-option").forEach((el, idx) => {
-    if (toRemove.includes(idx)) {
-      el.classList.add("disabled-option");
-    }
+    if (toRemove.includes(idx)) el.classList.add("disabled-option");
   });
 
-  if (selectedAnswerIndex !== null && toRemove.includes(selectedAnswerIndex)) {
-    selectedAnswerIndex = null;
-  }
+  if (selectedAnswerIndex !== null && toRemove.includes(selectedAnswerIndex)) selectedAnswerIndex = null;
 
   fiftyUsed = true;
   btn5050.disabled = true;
 }
 
 function useAudienceHelp() {
-  if (audienceUsed) {
-    alert("Já utilizaste a ajuda do público.");
-    return;
-  }
+  if (audienceUsed) return alert("Já utilizaste a ajuda do público.");
 
   const q = questions[currentQuestionIndex];
-  const indices = [0, 1, 2, 3];
-  let percentages = [0, 0, 0, 0];
+  const indices = [0,1,2,3];
+  let percentages = [0,0,0,0];
   const correctUsuallyWins = Math.random() < 0.9;
 
   if (correctUsuallyWins) {
@@ -518,14 +237,13 @@ function useAudienceHelp() {
     const a = Math.floor(Math.random() * (remaining - 10));
     const b = Math.floor(Math.random() * (remaining - a));
     const c = remaining - a - b;
-    const wrongPcts = [a, b, c].sort(() => Math.random() - 0.5);
-    wrongs.forEach((idx, i) => percentages[idx] = wrongPcts[i]);
+    const wrongPcts = [a,b,c].sort(() => Math.random() - 0.5);
+    wrongs.forEach((idx,i) => percentages[idx] = wrongPcts[i]);
   } else {
     const wrongs = indices.filter(i => i !== q.correct);
     const topWrong = wrongs[Math.floor(Math.random() * wrongs.length)];
     percentages[topWrong] = Math.floor(Math.random() * 20) + 40;
     percentages[q.correct] = Math.floor(Math.random() * 15) + 20;
-
     let remaining = 100 - percentages[topWrong] - percentages[q.correct];
     const otherWrongs = wrongs.filter(i => i !== topWrong);
     const first = Math.floor(Math.random() * remaining);
@@ -548,10 +266,7 @@ function useAudienceHelp() {
 }
 
 function submitAnswer() {
-  if (selectedAnswerIndex === null) {
-    alert("Seleciona uma resposta antes de confirmar.");
-    return;
-  }
+  if (selectedAnswerIndex === null) return alert("Seleciona uma resposta antes de confirmar.");
 
   const q = questions[currentQuestionIndex];
   const isCorrect = selectedAnswerIndex === q.correct;
@@ -577,7 +292,6 @@ function submitAnswer() {
 
 function finishGame() {
   clearInterval(timerInterval);
-
   const elapsed = getElapsedSeconds();
   finalScore.textContent = score;
   finalTime.textContent = formatTime(elapsed);
@@ -603,11 +317,9 @@ function finishGame() {
 
 function renderReview() {
   reviewContainer.innerHTML = "";
-
   answersLog.forEach((item, index) => {
     const wrap = document.createElement("div");
     wrap.className = "review-item";
-
     const correctAnswer = item.answers[item.correct];
     const chosenAnswer = item.answers[item.chosen];
 
@@ -620,7 +332,6 @@ function renderReview() {
       </p>
       ${item.isCorrect ? "" : `<p><strong>Resposta correta:</strong> ${correctAnswer}</p>`}
     `;
-
     reviewContainer.appendChild(wrap);
   });
 }
@@ -632,7 +343,6 @@ function saveParticipantToActiveSession(participant) {
   if (!session) return;
 
   session.participants.push(participant);
-
   session.participants.sort((a, b) => {
     if (b.score !== a.score) return b.score - a.score;
     if (a.time !== b.time) return a.time - b.time;
@@ -649,7 +359,7 @@ function renderRanking() {
   top3.innerHTML = "";
   rankingBody.innerHTML = "";
 
-  data.slice(0, 3).forEach((item, index) => {
+  data.slice(0,3).forEach((item, index) => {
     const card = document.createElement("div");
     card.className = "top3-card";
     card.innerHTML = `
@@ -693,10 +403,7 @@ function resetGameState() {
 
 function openAdminMenu() {
   const pass = prompt("Introduz a palavra-passe administrativa:");
-  if (pass !== ADMIN_PASSWORD) {
-    alert("Palavra-passe incorreta.");
-    return;
-  }
+  if (pass !== ADMIN_PASSWORD) return alert("Palavra-passe incorreta.");
 
   const action = prompt(
     "Modo administrativo:\n" +
@@ -714,10 +421,7 @@ function openAdminMenu() {
   switch (action.trim()) {
     case "1": {
       const s = getActiveSession();
-      if (!s) {
-        alert("Não existe sessão ativa.");
-        return;
-      }
+      if (!s) return alert("Não existe sessão ativa.");
       alert(`Sessão ativa:\n${s.name}\nEstado: ${s.status}\nParticipantes: ${s.participants.length}`);
       break;
     }
@@ -727,9 +431,7 @@ function openAdminMenu() {
       const sessions = getSessions();
       const currentActiveId = getActiveSessionId();
       const currentActive = sessions.find(s => s.id === currentActiveId && s.status === "active");
-      if (currentActive) {
-        currentActive.status = "closed";
-      }
+      if (currentActive) currentActive.status = "closed";
       const newSession = {
         id: `sessao-${Date.now()}`,
         name,
@@ -747,18 +449,13 @@ function openAdminMenu() {
     }
     case "3": {
       const sessions = getSessions();
-      const text = sessions
-        .map((s, i) => `${i + 1}. ${s.name} [${s.status === "active" ? "ativa" : "encerrada"}] (${s.participants.length} participantes)`)
-        .join("\n");
+      const text = sessions.map((s, i) => `${i + 1}. ${s.name} [${s.status === "active" ? "ativa" : "encerrada"}] (${s.participants.length} participantes)`).join("\n");
       alert(text || "Sem sessões.");
       break;
     }
     case "4": {
       const s = getActiveSession();
-      if (!s) {
-        alert("Não existe sessão ativa.");
-        return;
-      }
+      if (!s) return alert("Não existe sessão ativa.");
       const text = JSON.stringify(s, null, 2);
       navigator.clipboard.writeText(text).then(() => {
         alert("Sessão ativa copiada para a área de transferência.");
@@ -772,10 +469,7 @@ function openAdminMenu() {
       const sessions = getSessions();
       const activeId = getActiveSessionId();
       const session = sessions.find(s => s.id === activeId && s.status === "active");
-      if (!session) {
-        alert("Não existe sessão ativa.");
-        return;
-      }
+      if (!session) return alert("Não existe sessão ativa.");
       const ok = confirm(`Apagar participantes da sessão ativa?\n\n${session.name}`);
       if (!ok) return;
       session.participants = [];
@@ -785,19 +479,13 @@ function openAdminMenu() {
       break;
     }
     case "6": {
-      const name = prompt("Escreve o nome exato da sessão a apagar:");
-      if (!name) return;
       let sessions = getSessions();
       const activeId = getActiveSessionId();
+      const name = prompt("Escreve o nome exato da sessão a apagar:");
+      if (!name) return;
       const target = sessions.find(s => s.name === name);
-      if (!target) {
-        alert("Sessão não encontrada.");
-        return;
-      }
-      if (target.id === activeId) {
-        alert("Não podes apagar a sessão ativa. Encerra-a ou cria outra primeiro.");
-        return;
-      }
+      if (!target) return alert("Sessão não encontrada.");
+      if (target.id === activeId) return alert("Não podes apagar a sessão ativa. Encerra-a ou cria outra primeiro.");
       const ok = confirm(`Apagar esta sessão?\n\n${target.name}`);
       if (!ok) return;
       sessions = sessions.filter(s => s.id !== target.id);
@@ -809,10 +497,7 @@ function openAdminMenu() {
       const sessions = getSessions();
       const activeId = getActiveSessionId();
       const session = sessions.find(s => s.id === activeId && s.status === "active");
-      if (!session) {
-        alert("Não existe sessão ativa.");
-        return;
-      }
+      if (!session) return alert("Não existe sessão ativa.");
       const ok = confirm(`Encerrar sessão ativa?\n\n${session.name}`);
       if (!ok) return;
       session.status = "closed";
@@ -842,30 +527,24 @@ btnRules.addEventListener("click", () => {
 
 btnStart.addEventListener("click", () => {
   const activeSession = getActiveSession();
-  if (!activeSession) {
-    alert("Não existe uma sessão ativa. Pede ao responsável para criar ou ativar uma nova sessão.");
-    return;
-  }
+  if (!activeSession) return alert("Não existe uma sessão ativa. Pede ao responsável para criar ou ativar uma nova sessão.");
   showScreen("register");
 });
 
-btnBackHome.addEventListener("click", () => {
-  showScreen("home");
+btnHomeRanking.addEventListener("click", () => {
+  const activeSession = getActiveSession();
+  if (!activeSession) return alert("Não existe uma sessão ativa neste momento.");
+  renderRanking();
+  showScreen("ranking");
 });
+
+btnBackHome.addEventListener("click", () => showScreen("home"));
 
 registerForm.addEventListener("submit", (e) => {
   e.preventDefault();
-
   const activeSession = getActiveSession();
-  if (!activeSession) {
-    alert("Não existe uma sessão ativa. Pede ao responsável para criar ou ativar uma nova sessão.");
-    return;
-  }
-
-  if (!document.getElementById("rgpdConsent").checked) {
-    alert("É necessário aceitar o RGPD para continuar.");
-    return;
-  }
+  if (!activeSession) return alert("Não existe uma sessão ativa. Pede ao responsável para criar ou ativar uma nova sessão.");
+  if (!document.getElementById("rgpdConsent").checked) return alert("É necessário aceitar o RGPD para continuar.");
 
   currentParticipantData = {
     fullName: document.getElementById("fullName").value.trim(),
@@ -893,22 +572,13 @@ btnViewRanking.addEventListener("click", () => {
   showScreen("ranking");
 });
 
-btnRestart.addEventListener("click", () => {
-  showScreen("home");
-});
-
-btnRankingHome.addEventListener("click", () => {
-  showScreen("home");
-});
+btnRestart.addEventListener("click", () => showScreen("home"));
+btnRankingHome.addEventListener("click", () => showScreen("home"));
 
 adminTrigger.addEventListener("click", () => {
   adminTapCount++;
   if (adminTapTimer) clearTimeout(adminTapTimer);
-
-  adminTapTimer = setTimeout(() => {
-    adminTapCount = 0;
-  }, 1200);
-
+  adminTapTimer = setTimeout(() => { adminTapCount = 0; }, 1200);
   if (adminTapCount >= 5) {
     adminTapCount = 0;
     openAdminMenu();
