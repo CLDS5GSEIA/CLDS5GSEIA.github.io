@@ -1,0 +1,307 @@
+:root {
+  --bg: #f4f7fb;
+  --text: #17324d;
+  --muted: #60748a;
+  --card: #ffffff;
+  --line: #d9e5ef;
+  --brand: #1f4e79;
+  --accent: #f6a623;
+  --shadow: 0 10px 28px rgba(22, 45, 76, 0.08);
+  --success: #137333;
+  --error: #c5221f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+body {
+  min-height: 100vh;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.container.narrow {
+  max-width: 900px;
+}
+
+.hero {
+  min-height: 380px;
+  background-size: cover;
+  background-position: center;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 40px 24px;
+}
+
+.hero-content {
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: clamp(32px, 5vw, 56px);
+  margin: 0 0 12px;
+}
+
+.subtitle {
+  font-size: 20px;
+  margin: 0 0 12px;
+}
+
+.prize {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 0 24px;
+}
+
+.hero-actions,
+.form-actions,
+.question-actions-top {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn {
+  border: none;
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.btn:hover {
+  transform: scale(1.03);
+}
+
+.btn-primary {
+  background: var(--brand);
+  color: white;
+}
+
+.btn-secondary {
+  background: white;
+  color: var(--brand);
+  border: 1px solid var(--line);
+}
+
+.cards-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.info-card,
+.panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.info-card h3,
+.panel h2,
+.panel h3 {
+  margin-top: 0;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+label {
+  display: block;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+input[type="text"],
+input[type="date"],
+select,
+input[list] {
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  font-size: 16px;
+}
+
+.checkbox-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-weight: normal;
+}
+
+.checkbox-row input {
+  margin-top: 4px;
+}
+
+.rgpd-box {
+  background: #f8fbff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 18px;
+}
+
+.game-topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 18px;
+  font-weight: 700;
+}
+
+.progress-wrap {
+  margin-bottom: 18px;
+}
+
+.progress-label {
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 14px;
+  background: #e7eef6;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  transition: width 0.25s ease;
+}
+
+.question-label {
+  color: var(--muted);
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.answers {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+  margin-bottom: 22px;
+}
+
+.answer-option {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  font-weight: 700;
+}
+
+.answer-option:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.answer-option.selected {
+  border-color: var(--brand);
+  background: #eef5fb;
+}
+
+.review-item {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px;
+  margin-top: 14px;
+  background: #fff;
+}
+
+.review-status.correct {
+  color: var(--success);
+  font-weight: 700;
+}
+
+.review-status.incorrect {
+  color: var(--error);
+  font-weight: 700;
+}
+
+.top3-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 20px 0 24px;
+}
+
+.top3-card {
+  background: #f8fbff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 16px;
+  text-align: center;
+}
+
+.ranking-table-wrap {
+  overflow-x: auto;
+}
+
+.ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ranking-table th,
+.ranking-table td {
+  border-bottom: 1px solid var(--line);
+  padding: 12px 10px;
+  text-align: left;
+}
+
+@media (max-width: 900px) {
+  .cards-row,
+  .top3-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .game-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
