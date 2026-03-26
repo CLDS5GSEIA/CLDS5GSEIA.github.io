@@ -571,7 +571,22 @@ async function openAdminMenu() {
   const participantsSnap = await getDocs(collection(db, "sessions", activeSessionId, "participants"));
   const participants = participantsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
 
+  participants.sort((a, b) => {
+    if ((b.score || 0) !== (a.score || 0)) return (b.score || 0) - (a.score || 0);
+    if ((a.time || 0) !== (b.time || 0)) return (a.time || 0) - (b.time || 0);
+    return (a.timestampMs || 0) - (b.timestampMs || 0);
+  });
+
+  const getClassificationLabel = (index) => {
+    if (index === 0) return "1.º lugar";
+    if (index === 1) return "2.º lugar";
+    if (index === 2) return "3.º lugar";
+    return "";
+  };
+
   const headers = [
+    "Posição",
+    "Classificação",
     "Sessão",
     "Nome completo",
     "Data de nascimento",
@@ -582,7 +597,9 @@ async function openAdminMenu() {
     "Tempo"
   ];
 
-  const rows = participants.map(p => [
+  const rows = participants.map((p, index) => [
+    index + 1,
+    getClassificationLabel(index),
     activeSessionData.name || "",
     p.fullName || "",
     p.birthDate || "",
@@ -614,13 +631,13 @@ async function openAdminMenu() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `${fileNameSafe}_inscricoes.csv`;
+  a.download = `${fileNameSafe}_ranking_inscricoes.csv`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 
-  alert("CSV das inscrições exportado com sucesso.");
+  alert("CSV com ranking e vencedores exportado com sucesso.");
   break;
 }
 
