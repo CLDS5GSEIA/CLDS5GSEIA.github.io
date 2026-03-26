@@ -382,18 +382,24 @@ function getActiveSessionId() {
 }
 
 function setActiveSessionId(id) {
-  localStorage.setItem("quizActiveSessionId", id);
+  if (id) {
+    localStorage.setItem("quizActiveSessionId", id);
+  } else {
+    localStorage.removeItem("quizActiveSessionId");
+  }
 }
 
 function ensureDefaultSession() {
   let sessions = getSessions();
   let activeId = getActiveSessionId();
+  const activeSession = sessions.find(s => s.id === activeId && s.status === "active");
 
-  if (!activeId || !sessions.find(s => s.id === activeId)) {
+  if (!activeSession) {
     const defaultSession = {
       id: `sessao-teste-${Date.now()}`,
       name: `Sessão de teste — ${getTodayPT()}`,
       createdAt: Date.now(),
+      status: "active",
       participants: []
     };
     sessions.push(defaultSession);
@@ -403,15 +409,18 @@ function ensureDefaultSession() {
 }
 
 function getActiveSession() {
-  ensureDefaultSession();
   const sessions = getSessions();
   const activeId = getActiveSessionId();
-  return sessions.find(s => s.id === activeId);
+  return sessions.find(s => s.id === activeId && s.status === "active") || null;
 }
 
 function updateActiveSessionLabel() {
   const session = getActiveSession();
-  activeSessionNameEl.textContent = session ? session.name : "Sem sessão";
+  if (session) {
+    activeSessionNameEl.textContent = `${session.name} (ativa)`;
+  } else {
+    activeSessionNameEl.textContent = "Sem sessão ativa";
+  }
 }
 
 function getFirstLastName(fullName) {
@@ -501,7 +510,7 @@ function useAudienceHelp() {
 
   if (correctUsuallyWins) {
     let remaining = 100;
-    const correctPct = Math.floor(Math.random() * 27) + 52; // 52-78
+    const correctPct = Math.floor(Math.random() * 27) + 52;
     percentages[q.correct] = correctPct;
     remaining -= correctPct;
 
@@ -510,13 +519,12 @@ function useAudienceHelp() {
     const b = Math.floor(Math.random() * (remaining - a));
     const c = remaining - a - b;
     const wrongPcts = [a, b, c].sort(() => Math.random() - 0.5);
-
     wrongs.forEach((idx, i) => percentages[idx] = wrongPcts[i]);
   } else {
     const wrongs = indices.filter(i => i !== q.correct);
     const topWrong = wrongs[Math.floor(Math.random() * wrongs.length)];
-    percentages[topWrong] = Math.floor(Math.random() * 20) + 40; // 40-59
-    percentages[q.correct] = Math.floor(Math.random() * 15) + 20; // 20-34
+    percentages[topWrong] = Math.floor(Math.random() * 20) + 40;
+    percentages[q.correct] = Math.floor(Math.random() * 15) + 20;
 
     let remaining = 100 - percentages[topWrong] - percentages[q.correct];
     const otherWrongs = wrongs.filter(i => i !== topWrong);
@@ -620,7 +628,7 @@ function renderReview() {
 function saveParticipantToActiveSession(participant) {
   const sessions = getSessions();
   const activeId = getActiveSessionId();
-  const session = sessions.find(s => s.id === activeId);
+  const session = sessions.find(s => s.id === activeId && s.status === "active");
   if (!session) return;
 
   session.participants.push(participant);
@@ -697,92 +705,124 @@ function openAdminMenu() {
     "3 - Listar sessões\n" +
     "4 - Exportar sessão ativa\n" +
     "5 - Apagar participantes da sessão ativa\n" +
-    "6 - Apagar uma sessão pelo nome exato"
+    "6 - Apagar uma sessão pelo nome exato\n" +
+    "7 - Encerrar sessão ativa"
   );
 
   if (!action) return;
 
   switch (action.trim()) {
-    case "1":
-      {
-        const s = getActiveSession();
-        alert(`Sessão ativa:\n${s.name}\nParticipantes: ${s.participants.length}`);
+    case "1": {
+      const s = getActiveSession();
+      if (!s) {
+        alert("Não existe sessão ativa.");
+        return;
       }
+      alert(`Sessão ativa:\n${s.name}\nEstado: ${s.status}\nParticipantes: ${s.participants.length}`);
       break;
-    case "2":
-      {
-        const name = prompt("Nome da nova sessão (ex.: Feira da Interculturalidade — 12/04/2026):");
-        if (!name) return;
-        const sessions = getSessions();
-        const newSession = {
-          id: `sessao-${Date.now()}`,
-          name,
-          createdAt: Date.now(),
-          participants: []
-        };
-        sessions.push(newSession);
-        saveSessions(sessions);
-        setActiveSessionId(newSession.id);
-        updateActiveSessionLabel();
-        renderRanking();
-        alert("Nova sessão criada e ativada.");
+    }
+    case "2": {
+      const name = prompt("Nome da nova sessão (ex.: Feira da Interculturalidade — 12/04/2026):");
+      if (!name) return;
+      const sessions = getSessions();
+      const currentActiveId = getActiveSessionId();
+      const currentActive = sessions.find(s => s.id === currentActiveId && s.status === "active");
+      if (currentActive) {
+        currentActive.status = "closed";
       }
+      const newSession = {
+        id: `sessao-${Date.now()}`,
+        name,
+        createdAt: Date.now(),
+        status: "active",
+        participants: []
+      };
+      sessions.push(newSession);
+      saveSessions(sessions);
+      setActiveSessionId(newSession.id);
+      updateActiveSessionLabel();
+      renderRanking();
+      alert("Nova sessão criada e ativada.");
       break;
-    case "3":
-      {
-        const sessions = getSessions();
-        const text = sessions.map((s, i) => `${i + 1}. ${s.name} (${s.participants.length} participantes)`).join("\n");
-        alert(text || "Sem sessões.");
+    }
+    case "3": {
+      const sessions = getSessions();
+      const text = sessions
+        .map((s, i) => `${i + 1}. ${s.name} [${s.status === "active" ? "ativa" : "encerrada"}] (${s.participants.length} participantes)`)
+        .join("\n");
+      alert(text || "Sem sessões.");
+      break;
+    }
+    case "4": {
+      const s = getActiveSession();
+      if (!s) {
+        alert("Não existe sessão ativa.");
+        return;
       }
+      const text = JSON.stringify(s, null, 2);
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Sessão ativa copiada para a área de transferência.");
+      }).catch(() => {
+        alert("Não foi possível copiar automaticamente. Consulta a consola.");
+        console.log(text);
+      });
       break;
-    case "4":
-      {
-        const s = getActiveSession();
-        const text = JSON.stringify(s, null, 2);
-        navigator.clipboard.writeText(text).then(() => {
-          alert("Sessão ativa copiada para a área de transferência.");
-        }).catch(() => {
-          alert("Não foi possível copiar automaticamente. Consulta a consola.");
-          console.log(text);
-        });
+    }
+    case "5": {
+      const sessions = getSessions();
+      const activeId = getActiveSessionId();
+      const session = sessions.find(s => s.id === activeId && s.status === "active");
+      if (!session) {
+        alert("Não existe sessão ativa.");
+        return;
       }
+      const ok = confirm(`Apagar participantes da sessão ativa?\n\n${session.name}`);
+      if (!ok) return;
+      session.participants = [];
+      saveSessions(sessions);
+      renderRanking();
+      alert("Sessão ativa limpa.");
       break;
-    case "5":
-      {
-        const sessions = getSessions();
-        const activeId = getActiveSessionId();
-        const session = sessions.find(s => s.id === activeId);
-        if (!session) return;
-        const ok = confirm(`Apagar participantes da sessão ativa?\n\n${session.name}`);
-        if (!ok) return;
-        session.participants = [];
-        saveSessions(sessions);
-        renderRanking();
-        alert("Sessão ativa limpa.");
+    }
+    case "6": {
+      const name = prompt("Escreve o nome exato da sessão a apagar:");
+      if (!name) return;
+      let sessions = getSessions();
+      const activeId = getActiveSessionId();
+      const target = sessions.find(s => s.name === name);
+      if (!target) {
+        alert("Sessão não encontrada.");
+        return;
       }
-      break;
-    case "6":
-      {
-        const name = prompt("Escreve o nome exato da sessão a apagar:");
-        if (!name) return;
-        let sessions = getSessions();
-        const activeId = getActiveSessionId();
-        const target = sessions.find(s => s.name === name);
-        if (!target) {
-          alert("Sessão não encontrada.");
-          return;
-        }
-        if (target.id === activeId) {
-          alert("Não podes apagar a sessão ativa. Cria/ativa outra primeiro.");
-          return;
-        }
-        const ok = confirm(`Apagar esta sessão?\n\n${target.name}`);
-        if (!ok) return;
-        sessions = sessions.filter(s => s.id !== target.id);
-        saveSessions(sessions);
-        alert("Sessão apagada.");
+      if (target.id === activeId) {
+        alert("Não podes apagar a sessão ativa. Encerra-a ou cria outra primeiro.");
+        return;
       }
+      const ok = confirm(`Apagar esta sessão?\n\n${target.name}`);
+      if (!ok) return;
+      sessions = sessions.filter(s => s.id !== target.id);
+      saveSessions(sessions);
+      alert("Sessão apagada.");
       break;
+    }
+    case "7": {
+      const sessions = getSessions();
+      const activeId = getActiveSessionId();
+      const session = sessions.find(s => s.id === activeId && s.status === "active");
+      if (!session) {
+        alert("Não existe sessão ativa.");
+        return;
+      }
+      const ok = confirm(`Encerrar sessão ativa?\n\n${session.name}`);
+      if (!ok) return;
+      session.status = "closed";
+      saveSessions(sessions);
+      setActiveSessionId(null);
+      updateActiveSessionLabel();
+      renderRanking();
+      alert("Sessão ativa encerrada. Cria uma nova sessão para voltar a jogar.");
+      break;
+    }
     default:
       alert("Opção inválida.");
   }
@@ -790,7 +830,6 @@ function openAdminMenu() {
 
 btnRules.addEventListener("click", () => {
   const isHidden = rulesBox.classList.contains("hidden");
-
   if (isHidden) {
     rulesBox.classList.remove("hidden");
     setTimeout(() => {
@@ -802,6 +841,11 @@ btnRules.addEventListener("click", () => {
 });
 
 btnStart.addEventListener("click", () => {
+  const activeSession = getActiveSession();
+  if (!activeSession) {
+    alert("Não existe uma sessão ativa. Pede ao responsável para criar ou ativar uma nova sessão.");
+    return;
+  }
   showScreen("register");
 });
 
@@ -811,6 +855,12 @@ btnBackHome.addEventListener("click", () => {
 
 registerForm.addEventListener("submit", (e) => {
   e.preventDefault();
+
+  const activeSession = getActiveSession();
+  if (!activeSession) {
+    alert("Não existe uma sessão ativa. Pede ao responsável para criar ou ativar uma nova sessão.");
+    return;
+  }
 
   if (!document.getElementById("rgpdConsent").checked) {
     alert("É necessário aceitar o RGPD para continuar.");
