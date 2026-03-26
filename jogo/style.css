@@ -387,3 +387,17 @@ input[list] {
     font-size: 14px;
   }
 }
+
+#rules-box {
+  margin-top: 24px;
+}
+
+#rules-box ul {
+  padding-left: 20px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+#rules-box li + li {
+  margin-top: 8px;
+}
