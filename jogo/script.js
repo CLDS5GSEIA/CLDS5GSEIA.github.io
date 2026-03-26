@@ -1,4 +1,3 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore,
   doc,
@@ -9,8 +8,6 @@ import {
   deleteDoc,
   collection,
   getDocs,
-  query,
-  orderBy,
   onSnapshot,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -386,18 +383,23 @@ function subscribeRanking() {
   }
 
   const participantsRef = collection(db, "sessions", activeSessionId, "participants");
-  const q = query(
-    participantsRef,
-    orderBy("score", "desc"),
-    orderBy("time", "asc"),
-    orderBy("timestampMs", "asc")
-  );
 
-  rankingUnsubscribe = onSnapshot(q, (snapshot) => {
+  rankingUnsubscribe = onSnapshot(participantsRef, (snapshot) => {
     const data = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+
+    data.sort((a, b) => {
+      if ((b.score || 0) !== (a.score || 0)) return (b.score || 0) - (a.score || 0);
+      if ((a.time || 0) !== (b.time || 0)) return (a.time || 0) - (b.time || 0);
+      return (a.timestampMs || 0) - (b.timestampMs || 0);
+    });
+
     renderRankingData(data);
+  }, (error) => {
+    console.error("Erro ao ler ranking:", error);
+    alert("Erro ao carregar ranking. Vê a consola do browser.");
   });
 }
+
 
 function renderRankingData(data) {
   top3.innerHTML = "";
