@@ -52,33 +52,41 @@ body {
 
 .hero {
   width: 100%;
-  min-height: 420px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-color: #000;
+  background: #000;
+}
+
+.hero-image {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .home-intro {
   margin-top: 24px;
   text-align: center;
+  padding: 0;
 }
 
-.home-intro h1 {
-  margin: 0 0 12px;
-  font-size: clamp(32px, 5vw, 56px);
-  line-height: 1.1;
+.title-image {
+  display: block;
+  width: min(100%, 1200px);
+  height: auto;
+  margin: 0 auto 18px;
 }
 
 .subtitle {
-  font-size: 20px;
-  margin: 0 0 12px;
+  font-size: clamp(20px, 3vw, 36px);
+  line-height: 1.2;
+  font-weight: 700;
+  color: #3d3bb3;
+  margin: 0 0 18px;
 }
 
 .prize {
-  font-size: 18px;
-  font-weight: 700;
-  margin: 0 0 24px;
+  font-size: clamp(16px, 2vw, 26px);
+  font-weight: 500;
+  color: #222;
+  margin: 0 0 26px;
 }
 
 .hero-actions,
@@ -308,26 +316,17 @@ input[list] {
     align-items: flex-start;
   }
 
-  .hero {
-    min-height: 260px;
-    background-size: contain;
-    background-position: center top;
-  }
-
-  .home-intro {
-    margin-top: 16px;
-  }
-
-  .home-intro h1 {
-    font-size: 34px;
+  .title-image {
+    width: 100%;
+    max-width: 900px;
   }
 
   .subtitle {
-    font-size: 18px;
+    font-size: 24px;
   }
 
   .prize {
-    font-size: 16px;
+    font-size: 18px;
   }
 
   .container,
@@ -354,16 +353,12 @@ input[list] {
 }
 
 @media (max-width: 600px) {
-  .hero {
-    min-height: 210px;
-  }
-
-  .home-intro h1 {
-    font-size: 28px;
+  .title-image {
+    width: 100%;
   }
 
   .subtitle {
-    font-size: 16px;
+    font-size: 18px;
   }
 
   .prize {
