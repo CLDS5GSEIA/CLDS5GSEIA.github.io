@@ -584,6 +584,18 @@ async function openAdminMenu() {
     return "";
   };
 
+  const formatSubmissionDate = (timestampMs) => {
+    if (!timestampMs) return "";
+    const d = new Date(timestampMs);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    const hours = String(d.getHours()).padStart(2, "0");
+    const minutes = String(d.getMinutes()).padStart(2, "0");
+    const seconds = String(d.getSeconds()).padStart(2, "0");
+    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+  };
+
   const headers = [
     "Posição",
     "Classificação",
@@ -594,7 +606,8 @@ async function openAdminMenu() {
     "Residência",
     "Nacionalidade",
     "Pontuação",
-    "Tempo"
+    "Tempo",
+    "Data/hora da submissão"
   ];
 
   const rows = participants.map((p, index) => [
@@ -607,7 +620,8 @@ async function openAdminMenu() {
     p.residence || "",
     p.nationality || "",
     p.score ?? "",
-    p.time ?? ""
+    p.time ?? "",
+    formatSubmissionDate(p.timestampMs)
   ]);
 
   const escapeCsv = (value) => {
@@ -637,9 +651,10 @@ async function openAdminMenu() {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 
-  alert("CSV com ranking e vencedores exportado com sucesso.");
+  alert("CSV com ranking, vencedores e data de submissão exportado com sucesso.");
   break;
 }
+
 
     case "5": {
       if (!activeSessionId || !activeSessionData) {
