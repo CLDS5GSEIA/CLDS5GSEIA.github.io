@@ -1,3 +1,32 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  addDoc,
+  deleteDoc,
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  onSnapshot,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDmf-ymZs2Ew0WeV1Gh_V7jAZwGQDCOU90",
+  authDomain: "ranking-para-jogo.firebaseapp.com",
+  projectId: "ranking-para-jogo",
+  storageBucket: "ranking-para-jogo.firebasestorage.app",
+  messagingSenderId: "1056707148499",
+  appId: "1:1056707148499:web:43dabe6b71f24048c0f226"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 const ADMIN_PASSWORD = "cldsadmin";
 
 const countries = [
@@ -62,6 +91,10 @@ let currentParticipantData = null;
 let adminTapCount = 0;
 let adminTapTimer = null;
 
+let activeSessionId = null;
+let activeSessionData = null;
+let rankingUnsubscribe = null;
+
 const screens = {
   home: document.getElementById("screen-home"),
   register: document.getElementById("screen-register"),
@@ -102,11 +135,29 @@ const audienceResults = document.getElementById("audience-results");
 const activeSessionNameEl = document.getElementById("active-session-name");
 const adminTrigger = document.getElementById("admin-trigger");
 
-function cloneQuestions() { return JSON.parse(JSON.stringify(baseQuestions)); }
-function showScreen(name) { Object.values(screens).forEach(screen => screen.classList.remove("active")); screens[name].classList.add("active"); }
-function formatTime(totalSeconds) { const m = Math.floor(totalSeconds / 60).toString().padStart(2,"0"); const s = (totalSeconds % 60).toString().padStart(2,"0"); return `${m}:${s}`; }
-function getElapsedSeconds() { if (!startTimestamp) return 0; return Math.floor((Date.now() - startTimestamp) / 1000); }
-function updateTimer() { timerDisplay.textContent = formatTime(getElapsedSeconds()); }
+function cloneQuestions() {
+  return JSON.parse(JSON.stringify(baseQuestions));
+}
+
+function showScreen(name) {
+  Object.values(screens).forEach(screen => screen.classList.remove("active"));
+  screens[name].classList.add("active");
+}
+
+function formatTime(totalSeconds) {
+  const m = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
+  const s = (totalSeconds % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
+
+function getElapsedSeconds() {
+  if (!startTimestamp) return 0;
+  return Math.floor((Date.now() - startTimestamp) / 1000);
+}
+
+function updateTimer() {
+  timerDisplay.textContent = formatTime(getElapsedSeconds());
+}
 
 function fillCountries() {
   countries.forEach(country => {
@@ -122,41 +173,6 @@ function getTodayPT() {
   const month = String(d.getMonth() + 1).padStart(2, "0");
   const year = d.getFullYear();
   return `${day}/${month}/${year}`;
-}
-
-function getSessions() { return JSON.parse(localStorage.getItem("quizSessions") || "[]"); }
-function saveSessions(sessions) { localStorage.setItem("quizSessions", JSON.stringify(sessions)); }
-function getActiveSessionId() { return localStorage.getItem("quizActiveSessionId"); }
-function setActiveSessionId(id) { if (id) localStorage.setItem("quizActiveSessionId", id); else localStorage.removeItem("quizActiveSessionId"); }
-
-function ensureDefaultSession() {
-  let sessions = getSessions();
-  let activeId = getActiveSessionId();
-  const activeSession = sessions.find(s => s.id === activeId && s.status === "active");
-
-  if (!activeSession) {
-    const defaultSession = {
-      id: `sessao-teste-${Date.now()}`,
-      name: `Sessão de teste — ${getTodayPT()}`,
-      createdAt: Date.now(),
-      status: "active",
-      participants: []
-    };
-    sessions.push(defaultSession);
-    saveSessions(sessions);
-    setActiveSessionId(defaultSession.id);
-  }
-}
-
-function getActiveSession() {
-  const sessions = getSessions();
-  const activeId = getActiveSessionId();
-  return sessions.find(s => s.id === activeId && s.status === "active") || null;
-}
-
-function updateActiveSessionLabel() {
-  const session = getActiveSession();
-  activeSessionNameEl.textContent = session ? `${session.name} (ativa)` : "Sem sessão ativa";
 }
 
 function getFirstLastName(fullName) {
@@ -213,7 +229,9 @@ function apply5050() {
     if (toRemove.includes(idx)) el.classList.add("disabled-option");
   });
 
-  if (selectedAnswerIndex !== null && toRemove.includes(selectedAnswerIndex)) selectedAnswerIndex = null;
+  if (selectedAnswerIndex !== null && toRemove.includes(selectedAnswerIndex)) {
+    selectedAnswerIndex = null;
+  }
 
   fiftyUsed = true;
   btn5050.disabled = true;
@@ -238,13 +256,14 @@ function useAudienceHelp() {
     const b = Math.floor(Math.random() * (remaining - a));
     const c = remaining - a - b;
     const wrongPcts = [a,b,c].sort(() => Math.random() - 0.5);
-    wrongs.forEach((idx,i) => percentages[idx] = wrongPcts[i]);
+    wrongs.forEach((idx, i) => percentages[idx] = wrongPcts[i]);
   } else {
     const wrongs = indices.filter(i => i !== q.correct);
     const topWrong = wrongs[Math.floor(Math.random() * wrongs.length)];
     percentages[topWrong] = Math.floor(Math.random() * 20) + 40;
     percentages[q.correct] = Math.floor(Math.random() * 15) + 20;
-    let remaining = 100 - percentages[topWrong] - percentages[q.correct];
+
+    const remaining = 100 - percentages[topWrong] - percentages[q.correct];
     const otherWrongs = wrongs.filter(i => i !== topWrong);
     const first = Math.floor(Math.random() * remaining);
     const second = remaining - first;
@@ -263,56 +282,6 @@ function useAudienceHelp() {
   audienceBox.classList.remove("hidden");
   audienceUsed = true;
   btnAudience.disabled = true;
-}
-
-function submitAnswer() {
-  if (selectedAnswerIndex === null) return alert("Seleciona uma resposta antes de confirmar.");
-
-  const q = questions[currentQuestionIndex];
-  const isCorrect = selectedAnswerIndex === q.correct;
-  if (isCorrect) score += q.points;
-
-  answersLog.push({
-    question: q.text,
-    answers: q.answers,
-    chosen: selectedAnswerIndex,
-    correct: q.correct,
-    isCorrect,
-    points: q.points,
-    level: q.level
-  });
-
-  if (currentQuestionIndex < questions.length - 1) {
-    currentQuestionIndex++;
-    renderQuestion();
-  } else {
-    finishGame();
-  }
-}
-
-function finishGame() {
-  clearInterval(timerInterval);
-  const elapsed = getElapsedSeconds();
-  finalScore.textContent = score;
-  finalTime.textContent = formatTime(elapsed);
-
-  const participant = {
-    fullName: currentParticipantData.fullName,
-    birthDate: currentParticipantData.birthDate,
-    education: currentParticipantData.education,
-    residence: currentParticipantData.residence,
-    nationality: currentParticipantData.nationality,
-    firstLastName: getFirstLastName(currentParticipantData.fullName),
-    score,
-    time: elapsed,
-    answersLog,
-    timestamp: Date.now()
-  };
-
-  saveParticipantToActiveSession(participant);
-  renderReview();
-  renderRanking();
-  showScreen("result");
 }
 
 function renderReview() {
@@ -336,53 +305,6 @@ function renderReview() {
   });
 }
 
-function saveParticipantToActiveSession(participant) {
-  const sessions = getSessions();
-  const activeId = getActiveSessionId();
-  const session = sessions.find(s => s.id === activeId && s.status === "active");
-  if (!session) return;
-
-  session.participants.push(participant);
-  session.participants.sort((a, b) => {
-    if (b.score !== a.score) return b.score - a.score;
-    if (a.time !== b.time) return a.time - b.time;
-    return a.timestamp - b.timestamp;
-  });
-
-  saveSessions(sessions);
-}
-
-function renderRanking() {
-  const session = getActiveSession();
-  const data = session ? session.participants : [];
-
-  top3.innerHTML = "";
-  rankingBody.innerHTML = "";
-
-  data.slice(0,3).forEach((item, index) => {
-    const card = document.createElement("div");
-    card.className = "top3-card";
-    card.innerHTML = `
-      <h3>${index + 1}º Lugar</h3>
-      <p><strong>${item.firstLastName}</strong></p>
-      <p>${item.score} pontos</p>
-      <p>${formatTime(item.time)}</p>
-    `;
-    top3.appendChild(card);
-  });
-
-  data.forEach((item, index) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${index + 1}</td>
-      <td>${item.firstLastName}</td>
-      <td>${item.score}</td>
-      <td>${formatTime(item.time)}</td>
-    `;
-    rankingBody.appendChild(tr);
-  });
-}
-
 function resetGameState() {
   questions = cloneQuestions();
   currentQuestionIndex = 0;
@@ -401,9 +323,185 @@ function resetGameState() {
   clearInterval(timerInterval);
 }
 
-function openAdminMenu() {
+async function ensureSharedDefaultSession() {
+  const metaRef = doc(db, "meta", "config");
+  const metaSnap = await getDoc(metaRef);
+
+  if (!metaSnap.exists() || !metaSnap.data().activeSessionId) {
+    const sessionRef = await addDoc(collection(db, "sessions"), {
+      name: `Sessão de teste — ${getTodayPT()}`,
+      status: "active",
+      createdAt: serverTimestamp()
+    });
+
+    await setDoc(metaRef, {
+      activeSessionId: sessionRef.id
+    });
+  }
+}
+
+async function loadActiveSession() {
+  const metaRef = doc(db, "meta", "config");
+  const metaSnap = await getDoc(metaRef);
+
+  if (!metaSnap.exists() || !metaSnap.data().activeSessionId) {
+    activeSessionId = null;
+    activeSessionData = null;
+    updateActiveSessionLabel();
+    renderRankingData([]);
+    return;
+  }
+
+  activeSessionId = metaSnap.data().activeSessionId;
+  const sessionRef = doc(db, "sessions", activeSessionId);
+  const sessionSnap = await getDoc(sessionRef);
+
+  if (!sessionSnap.exists()) {
+    activeSessionId = null;
+    activeSessionData = null;
+    updateActiveSessionLabel();
+    renderRankingData([]);
+    return;
+  }
+
+  activeSessionData = { id: sessionSnap.id, ...sessionSnap.data() };
+  updateActiveSessionLabel();
+  subscribeRanking();
+}
+
+function updateActiveSessionLabel() {
+  if (activeSessionData && activeSessionData.name) {
+    activeSessionNameEl.textContent = `${activeSessionData.name} (ativa)`;
+  } else {
+    activeSessionNameEl.textContent = "Sem sessão ativa";
+  }
+}
+
+function subscribeRanking() {
+  if (rankingUnsubscribe) rankingUnsubscribe();
+
+  if (!activeSessionId) {
+    renderRankingData([]);
+    return;
+  }
+
+  const participantsRef = collection(db, "sessions", activeSessionId, "participants");
+  const q = query(
+    participantsRef,
+    orderBy("score", "desc"),
+    orderBy("time", "asc"),
+    orderBy("timestampMs", "asc")
+  );
+
+  rankingUnsubscribe = onSnapshot(q, (snapshot) => {
+    const data = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+    renderRankingData(data);
+  });
+}
+
+function renderRankingData(data) {
+  top3.innerHTML = "";
+  rankingBody.innerHTML = "";
+
+  data.slice(0, 3).forEach((item, index) => {
+    const card = document.createElement("div");
+    card.className = "top3-card";
+    card.innerHTML = `
+      <h3>${index + 1}º Lugar</h3>
+      <p><strong>${item.firstLastName || item.fullName}</strong></p>
+      <p>${item.score || 0} pontos</p>
+      <p>${formatTime(item.time || 0)}</p>
+    `;
+    top3.appendChild(card);
+  });
+
+  data.forEach((item, index) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${item.firstLastName || item.fullName}</td>
+      <td>${item.score || 0}</td>
+      <td>${formatTime(item.time || 0)}</td>
+    `;
+    rankingBody.appendChild(tr);
+  });
+}
+
+async function saveParticipantToActiveSession(participant) {
+  if (!activeSessionId) {
+    throw new Error("Sem sessão ativa.");
+  }
+
+  await addDoc(collection(db, "sessions", activeSessionId, "participants"), {
+    ...participant,
+    createdAt: serverTimestamp()
+  });
+}
+
+async function finishGame() {
+  clearInterval(timerInterval);
+
+  const elapsed = getElapsedSeconds();
+  finalScore.textContent = score;
+  finalTime.textContent = formatTime(elapsed);
+
+  const participant = {
+    fullName: currentParticipantData.fullName,
+    birthDate: currentParticipantData.birthDate,
+    education: currentParticipantData.education,
+    residence: currentParticipantData.residence,
+    nationality: currentParticipantData.nationality,
+    firstLastName: getFirstLastName(currentParticipantData.fullName),
+    score,
+    time: elapsed,
+    answersLog,
+    timestampMs: Date.now()
+  };
+
+  try {
+    await saveParticipantToActiveSession(participant);
+    renderReview();
+    showScreen("result");
+  } catch (error) {
+    console.error(error);
+    alert("Não foi possível guardar o resultado online.");
+  }
+}
+
+function submitAnswer() {
+  if (selectedAnswerIndex === null) {
+    alert("Seleciona uma resposta antes de confirmar.");
+    return;
+  }
+
+  const q = questions[currentQuestionIndex];
+  const isCorrect = selectedAnswerIndex === q.correct;
+  if (isCorrect) score += q.points;
+
+  answersLog.push({
+    question: q.text,
+    answers: q.answers,
+    chosen: selectedAnswerIndex,
+    correct: q.correct,
+    isCorrect,
+    points: q.points,
+    level: q.level
+  });
+
+  if (currentQuestionIndex < questions.length - 1) {
+    currentQuestionIndex++;
+    renderQuestion();
+  } else {
+    finishGame();
+  }
+}
+
+async function openAdminMenu() {
   const pass = prompt("Introduz a palavra-passe administrativa:");
-  if (pass !== ADMIN_PASSWORD) return alert("Palavra-passe incorreta.");
+  if (pass !== ADMIN_PASSWORD) {
+    alert("Palavra-passe incorreta.");
+    return;
+  }
 
   const action = prompt(
     "Modo administrativo:\n" +
@@ -420,94 +518,137 @@ function openAdminMenu() {
 
   switch (action.trim()) {
     case "1": {
-      const s = getActiveSession();
-      if (!s) return alert("Não existe sessão ativa.");
-      alert(`Sessão ativa:\n${s.name}\nEstado: ${s.status}\nParticipantes: ${s.participants.length}`);
+      if (!activeSessionData) {
+        alert("Não existe sessão ativa.");
+        return;
+      }
+      const participantsSnap = await getDocs(collection(db, "sessions", activeSessionId, "participants"));
+      alert(`Sessão ativa:\n${activeSessionData.name}\nEstado: ${activeSessionData.status}\nParticipantes: ${participantsSnap.size}`);
       break;
     }
+
     case "2": {
       const name = prompt("Nome da nova sessão (ex.: Feira da Interculturalidade — 12/04/2026):");
       if (!name) return;
-      const sessions = getSessions();
-      const currentActiveId = getActiveSessionId();
-      const currentActive = sessions.find(s => s.id === currentActiveId && s.status === "active");
-      if (currentActive) currentActive.status = "closed";
-      const newSession = {
-        id: `sessao-${Date.now()}`,
+
+      if (activeSessionId) {
+        await updateDoc(doc(db, "sessions", activeSessionId), { status: "closed" });
+      }
+
+      const sessionRef = await addDoc(collection(db, "sessions"), {
         name,
-        createdAt: Date.now(),
         status: "active",
-        participants: []
-      };
-      sessions.push(newSession);
-      saveSessions(sessions);
-      setActiveSessionId(newSession.id);
-      updateActiveSessionLabel();
-      renderRanking();
+        createdAt: serverTimestamp()
+      });
+
+      await setDoc(doc(db, "meta", "config"), {
+        activeSessionId: sessionRef.id
+      });
+
+      await loadActiveSession();
       alert("Nova sessão criada e ativada.");
       break;
     }
+
     case "3": {
-      const sessions = getSessions();
-      const text = sessions.map((s, i) => `${i + 1}. ${s.name} [${s.status === "active" ? "ativa" : "encerrada"}] (${s.participants.length} participantes)`).join("\n");
-      alert(text || "Sem sessões.");
+      const sessionsSnap = await getDocs(collection(db, "sessions"));
+      const sessions = sessionsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const text = sessions.length
+        ? sessions.map((s, i) => `${i + 1}. ${s.name} [${s.status}]`).join("\n")
+        : "Sem sessões.";
+      alert(text);
       break;
     }
+
     case "4": {
-      const s = getActiveSession();
-      if (!s) return alert("Não existe sessão ativa.");
-      const text = JSON.stringify(s, null, 2);
-      navigator.clipboard.writeText(text).then(() => {
-        alert("Sessão ativa copiada para a área de transferência.");
-      }).catch(() => {
-        alert("Não foi possível copiar automaticamente. Consulta a consola.");
-        console.log(text);
-      });
+      if (!activeSessionId || !activeSessionData) {
+        alert("Não existe sessão ativa.");
+        return;
+      }
+
+      const participantsSnap = await getDocs(collection(db, "sessions", activeSessionId, "participants"));
+      const participants = participantsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      const exportData = {
+        session: activeSessionData,
+        participants
+      };
+
+      await navigator.clipboard.writeText(JSON.stringify(exportData, null, 2));
+      alert("Sessão ativa copiada para a área de transferência.");
       break;
     }
+
     case "5": {
-      const sessions = getSessions();
-      const activeId = getActiveSessionId();
-      const session = sessions.find(s => s.id === activeId && s.status === "active");
-      if (!session) return alert("Não existe sessão ativa.");
-      const ok = confirm(`Apagar participantes da sessão ativa?\n\n${session.name}`);
+      if (!activeSessionId || !activeSessionData) {
+        alert("Não existe sessão ativa.");
+        return;
+      }
+
+      const ok = confirm(`Apagar participantes da sessão ativa?\n\n${activeSessionData.name}`);
       if (!ok) return;
-      session.participants = [];
-      saveSessions(sessions);
-      renderRanking();
-      alert("Sessão ativa limpa.");
+
+      const participantsSnap = await getDocs(collection(db, "sessions", activeSessionId, "participants"));
+      for (const item of participantsSnap.docs) {
+        await deleteDoc(doc(db, "sessions", activeSessionId, "participants", item.id));
+      }
+
+      alert("Participantes da sessão ativa apagados.");
       break;
     }
+
     case "6": {
-      let sessions = getSessions();
-      const activeId = getActiveSessionId();
       const name = prompt("Escreve o nome exato da sessão a apagar:");
       if (!name) return;
-      const target = sessions.find(s => s.name === name);
-      if (!target) return alert("Sessão não encontrada.");
-      if (target.id === activeId) return alert("Não podes apagar a sessão ativa. Encerra-a ou cria outra primeiro.");
-      const ok = confirm(`Apagar esta sessão?\n\n${target.name}`);
+
+      const sessionsSnap = await getDocs(collection(db, "sessions"));
+      const target = sessionsSnap.docs.find(d => d.data().name === name);
+
+      if (!target) {
+        alert("Sessão não encontrada.");
+        return;
+      }
+
+      if (target.id === activeSessionId) {
+        alert("Não podes apagar a sessão ativa. Encerra-a ou cria outra primeiro.");
+        return;
+      }
+
+      const ok = confirm(`Apagar esta sessão?\n\n${name}`);
       if (!ok) return;
-      sessions = sessions.filter(s => s.id !== target.id);
-      saveSessions(sessions);
+
+      const participantsSnap = await getDocs(collection(db, "sessions", target.id, "participants"));
+      for (const item of participantsSnap.docs) {
+        await deleteDoc(doc(db, "sessions", target.id, "participants", item.id));
+      }
+
+      await deleteDoc(doc(db, "sessions", target.id));
       alert("Sessão apagada.");
       break;
     }
+
     case "7": {
-      const sessions = getSessions();
-      const activeId = getActiveSessionId();
-      const session = sessions.find(s => s.id === activeId && s.status === "active");
-      if (!session) return alert("Não existe sessão ativa.");
-      const ok = confirm(`Encerrar sessão ativa?\n\n${session.name}`);
+      if (!activeSessionId || !activeSessionData) {
+        alert("Não existe sessão ativa.");
+        return;
+      }
+
+      const ok = confirm(`Encerrar sessão ativa?\n\n${activeSessionData.name}`);
       if (!ok) return;
-      session.status = "closed";
-      saveSessions(sessions);
-      setActiveSessionId(null);
+
+      await updateDoc(doc(db, "sessions", activeSessionId), { status: "closed" });
+      await setDoc(doc(db, "meta", "config"), { activeSessionId: null });
+
+      activeSessionId = null;
+      activeSessionData = null;
       updateActiveSessionLabel();
-      renderRanking();
+      if (rankingUnsubscribe) rankingUnsubscribe();
+      renderRankingData([]);
+
       alert("Sessão ativa encerrada. Cria uma nova sessão para voltar a jogar.");
       break;
     }
+
     default:
       alert("Opção inválida.");
   }
@@ -526,25 +667,37 @@ btnRules.addEventListener("click", () => {
 });
 
 btnStart.addEventListener("click", () => {
-  const activeSession = getActiveSession();
-  if (!activeSession) return alert("Não existe uma sessão ativa. Pede ao responsável para criar ou ativar uma nova sessão.");
+  if (!activeSessionId) {
+    alert("Não existe uma sessão ativa. Pede ao responsável para criar ou ativar uma nova sessão.");
+    return;
+  }
   showScreen("register");
 });
 
 btnHomeRanking.addEventListener("click", () => {
-  const activeSession = getActiveSession();
-  if (!activeSession) return alert("Não existe uma sessão ativa neste momento.");
-  renderRanking();
+  if (!activeSessionId) {
+    alert("Não existe uma sessão ativa neste momento.");
+    return;
+  }
   showScreen("ranking");
 });
 
-btnBackHome.addEventListener("click", () => showScreen("home"));
+btnBackHome.addEventListener("click", () => {
+  showScreen("home");
+});
 
 registerForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  const activeSession = getActiveSession();
-  if (!activeSession) return alert("Não existe uma sessão ativa. Pede ao responsável para criar ou ativar uma nova sessão.");
-  if (!document.getElementById("rgpdConsent").checked) return alert("É necessário aceitar o RGPD para continuar.");
+
+  if (!activeSessionId) {
+    alert("Não existe uma sessão ativa. Pede ao responsável para criar ou ativar uma nova sessão.");
+    return;
+  }
+
+  if (!document.getElementById("rgpdConsent").checked) {
+    alert("É necessário aceitar o RGPD para continuar.");
+    return;
+  }
 
   currentParticipantData = {
     fullName: document.getElementById("fullName").value.trim(),
@@ -568,17 +721,25 @@ btn5050.addEventListener("click", apply5050);
 btnAudience.addEventListener("click", useAudienceHelp);
 
 btnViewRanking.addEventListener("click", () => {
-  renderRanking();
   showScreen("ranking");
 });
 
-btnRestart.addEventListener("click", () => showScreen("home"));
-btnRankingHome.addEventListener("click", () => showScreen("home"));
+btnRestart.addEventListener("click", () => {
+  showScreen("home");
+});
+
+btnRankingHome.addEventListener("click", () => {
+  showScreen("home");
+});
 
 adminTrigger.addEventListener("click", () => {
   adminTapCount++;
   if (adminTapTimer) clearTimeout(adminTapTimer);
-  adminTapTimer = setTimeout(() => { adminTapCount = 0; }, 1200);
+
+  adminTapTimer = setTimeout(() => {
+    adminTapCount = 0;
+  }, 1200);
+
   if (adminTapCount >= 5) {
     adminTapCount = 0;
     openAdminMenu();
@@ -586,6 +747,6 @@ adminTrigger.addEventListener("click", () => {
 });
 
 fillCountries();
-ensureDefaultSession();
-updateActiveSessionLabel();
-renderRanking();
+
+await ensureSharedDefaultSession();
+await loadActiveSession();
