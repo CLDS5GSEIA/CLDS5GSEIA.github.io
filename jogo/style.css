@@ -15,8 +15,7 @@
   box-sizing: border-box;
 }
 
-html,
-body {
+html, body {
   margin: 0;
   padding: 0;
   font-family: Arial, Helvetica, sans-serif;
@@ -76,6 +75,12 @@ body {
   margin: 0 auto 18px;
 }
 
+.session-label {
+  color: var(--muted);
+  font-weight: 700;
+  margin: 0 0 20px;
+}
+
 .hero-actions,
 .form-actions,
 .question-actions-top {
@@ -97,6 +102,12 @@ body {
 
 .btn:hover {
   transform: scale(1.03);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .btn-primary {
@@ -170,8 +181,8 @@ input[list] {
   background: #f8fbff;
   border: 1px solid var(--line);
   border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 18px;
+  padding: 14px;
+  margin-bottom: 22px;
 }
 
 .game-topbar {
@@ -243,6 +254,11 @@ input[list] {
   background: #eef5fb;
 }
 
+.answer-option.disabled-option {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
 .review-item {
   border: 1px solid var(--line);
   border-radius: 16px;
@@ -290,6 +306,18 @@ input[list] {
   border-bottom: 1px solid var(--line);
   padding: 12px 10px;
   text-align: left;
+}
+
+#audience-results {
+  display: grid;
+  gap: 8px;
+}
+
+.audience-row {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  padding: 6px 0;
 }
 
 @media (max-width: 900px) {
