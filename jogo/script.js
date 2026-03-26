@@ -826,6 +826,7 @@ adminTrigger.addEventListener("click", () => {
 });
 
 async function init() {
+  await signInAnonymously(auth);
   fillCountries();
   await ensureSharedDefaultSession();
   await loadActiveSession();
