@@ -562,24 +562,40 @@ async function openAdminMenu() {
       break;
     }
 
-    case "4": {
-      if (!activeSessionId || !activeSessionData) {
-        alert("Não existe sessão ativa.");
-        return;
-      }
+   case "4": {
+  if (!activeSessionId || !activeSessionData) {
+    alert("Não existe sessão ativa.");
+    return;
+  }
 
-      const participantsSnap = await getDocs(collection(db, "sessions", activeSessionId, "participants"));
-      const participants = participantsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+  const participantsSnap = await getDocs(collection(db, "sessions", activeSessionId, "participants"));
+  const participants = participantsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-      const exportData = {
-        session: activeSessionData,
-        participants
-      };
+  const exportData = {
+    session: activeSessionData,
+    participants
+  };
 
-      await navigator.clipboard.writeText(JSON.stringify(exportData, null, 2));
-      alert("Sessão ativa copiada para a área de transferência.");
-      break;
-    }
+  const fileNameSafe = (activeSessionData.name || "sessao")
+    .replace(/[\\/:*?"<>|]+/g, "-")
+    .replace(/\s+/g, "_");
+
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+    type: "application/json;charset=utf-8"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${fileNameSafe}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  alert("Ficheiro da sessão exportado com sucesso.");
+  break;
+}
 
     case "5": {
       if (!activeSessionId || !activeSessionData) {
