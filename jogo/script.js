@@ -562,7 +562,7 @@ async function openAdminMenu() {
       break;
     }
 
-   case "4": {
+  case "4": {
   if (!activeSessionId || !activeSessionData) {
     alert("Não existe sessão ativa.");
     return;
@@ -571,29 +571,56 @@ async function openAdminMenu() {
   const participantsSnap = await getDocs(collection(db, "sessions", activeSessionId, "participants"));
   const participants = participantsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-  const exportData = {
-    session: activeSessionData,
-    participants
+  const headers = [
+    "Sessão",
+    "Nome completo",
+    "Data de nascimento",
+    "Escolaridade",
+    "Residência",
+    "Nacionalidade",
+    "Pontuação",
+    "Tempo"
+  ];
+
+  const rows = participants.map(p => [
+    activeSessionData.name || "",
+    p.fullName || "",
+    p.birthDate || "",
+    p.education || "",
+    p.residence || "",
+    p.nationality || "",
+    p.score ?? "",
+    p.time ?? ""
+  ]);
+
+  const escapeCsv = (value) => {
+    const text = String(value ?? "");
+    return `"${text.replace(/"/g, '""')}"`;
   };
 
-  const fileNameSafe = (activeSessionData.name || "sessao")
+  const csvContent = [
+    headers.map(escapeCsv).join(";"),
+    ...rows.map(row => row.map(escapeCsv).join(";"))
+  ].join("\n");
+
+  const fileNameSafe = (activeSessionData.name || "inscricoes")
     .replace(/[\\/:*?"<>|]+/g, "-")
     .replace(/\s+/g, "_");
 
-  const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-    type: "application/json;charset=utf-8"
+  const blob = new Blob(["\uFEFF" + csvContent], {
+    type: "text/csv;charset=utf-8;"
   });
 
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `${fileNameSafe}.json`;
+  a.download = `${fileNameSafe}_inscricoes.csv`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 
-  alert("Ficheiro da sessão exportado com sucesso.");
+  alert("CSV das inscrições exportado com sucesso.");
   break;
 }
 
