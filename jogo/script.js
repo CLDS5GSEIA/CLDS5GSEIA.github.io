@@ -13,14 +13,13 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* COLOCA AQUI O TEU firebaseConfig EXACTAMENTE COMO ESTÁ NA CONSOLA */
 const firebaseConfig = {
-  apiKey: "COLOCA_A_TUA_API_KEY",
-  authDomain: "COLOCA_O_TEU_AUTH_DOMAIN",
-  projectId: "COLOCA_O_TEU_PROJECT_ID",
-  storageBucket: "COLOCA_O_TEU_STORAGE_BUCKET",
-  messagingSenderId: "COLOCA_O_TEU_MESSAGING_SENDER_ID",
-  appId: "COLOCA_O_TEU_APP_ID"
+  apiKey: "AIzaSyDmf-ymZs2Ew0WeV1Gh_V7jAZwGQDCOU90",
+  authDomain: "ranking-para-jogo.firebaseapp.com",
+  projectId: "ranking-para-jogo",
+  storageBucket: "ranking-para-jogo.firebasestorage.app",
+  messagingSenderId: "1056707148499",
+  appId: "1:1056707148499:web:43dabe6b71f24048c0f226"
 };
 
 const app = initializeApp(firebaseConfig);
