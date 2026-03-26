@@ -1,3 +1,5 @@
+const ADMIN_PASSWORD = "cldsadmin";
+
 const countries = [
   "Afeganistão","África do Sul","Albânia","Alemanha","Andorra","Angola","Antígua e Barbuda","Arábia Saudita",
   "Argélia","Argentina","Arménia","Austrália","Áustria","Azerbaijão","Bahamas","Bangladesh","Barbados","Barém",
@@ -21,7 +23,7 @@ const countries = [
   "Uganda","Uruguai","Uzbequistão","Vanuatu","Vaticano","Venezuela","Vietname","Zâmbia","Zimbábue"
 ];
 
-const questions = [
+const baseQuestions = [
   {
     id: "F6",
     level: "easy",
@@ -274,6 +276,7 @@ const reserves = {
   }
 };
 
+let questions = [];
 let currentQuestionIndex = 0;
 let selectedAnswerIndex = null;
 let startTimestamp = null;
@@ -281,6 +284,11 @@ let timerInterval = null;
 let score = 0;
 let answersLog = [];
 let swapUsed = false;
+let fiftyUsed = false;
+let audienceUsed = false;
+let currentParticipantData = null;
+let adminTapCount = 0;
+let adminTapTimer = null;
 
 const screens = {
   home: document.getElementById("screen-home"),
@@ -299,6 +307,8 @@ const btnBackHome = document.getElementById("btn-back-home");
 const registerForm = document.getElementById("register-form");
 const btnConfirmAnswer = document.getElementById("btn-confirm-answer");
 const btnSwapQuestion = document.getElementById("btn-swap-question");
+const btn5050 = document.getElementById("btn-5050");
+const btnAudience = document.getElementById("btn-audience");
 const btnViewRanking = document.getElementById("btn-view-ranking");
 const btnRestart = document.getElementById("btn-restart");
 const btnRankingHome = document.getElementById("btn-ranking-home");
@@ -314,6 +324,14 @@ const finalTime = document.getElementById("final-time");
 const reviewContainer = document.getElementById("review-container");
 const rankingBody = document.getElementById("ranking-body");
 const top3 = document.getElementById("top3");
+const audienceBox = document.getElementById("audience-box");
+const audienceResults = document.getElementById("audience-results");
+const activeSessionNameEl = document.getElementById("active-session-name");
+const adminTrigger = document.getElementById("admin-trigger");
+
+function cloneQuestions() {
+  return JSON.parse(JSON.stringify(baseQuestions));
+}
 
 function showScreen(name) {
   Object.values(screens).forEach(screen => screen.classList.remove("active"));
@@ -343,9 +361,70 @@ function fillCountries() {
   });
 }
 
+function getTodayPT() {
+  const d = new Date();
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+function getSessions() {
+  return JSON.parse(localStorage.getItem("quizSessions") || "[]");
+}
+
+function saveSessions(sessions) {
+  localStorage.setItem("quizSessions", JSON.stringify(sessions));
+}
+
+function getActiveSessionId() {
+  return localStorage.getItem("quizActiveSessionId");
+}
+
+function setActiveSessionId(id) {
+  localStorage.setItem("quizActiveSessionId", id);
+}
+
+function ensureDefaultSession() {
+  let sessions = getSessions();
+  let activeId = getActiveSessionId();
+
+  if (!activeId || !sessions.find(s => s.id === activeId)) {
+    const defaultSession = {
+      id: `sessao-teste-${Date.now()}`,
+      name: `Sessão de teste — ${getTodayPT()}`,
+      createdAt: Date.now(),
+      participants: []
+    };
+    sessions.push(defaultSession);
+    saveSessions(sessions);
+    setActiveSessionId(defaultSession.id);
+  }
+}
+
+function getActiveSession() {
+  ensureDefaultSession();
+  const sessions = getSessions();
+  const activeId = getActiveSessionId();
+  return sessions.find(s => s.id === activeId);
+}
+
+function updateActiveSessionLabel() {
+  const session = getActiveSession();
+  activeSessionNameEl.textContent = session ? session.name : "Sem sessão";
+}
+
+function getFirstLastName(fullName) {
+  const parts = fullName.split(/\s+/).filter(Boolean);
+  if (parts.length <= 1) return fullName;
+  return `${parts[0]} ${parts[parts.length - 1]}`;
+}
+
 function renderQuestion() {
   const q = questions[currentQuestionIndex];
   selectedAnswerIndex = null;
+  audienceBox.classList.add("hidden");
+  audienceResults.innerHTML = "";
 
   currentQuestionNumber.textContent = currentQuestionIndex + 1;
   questionNumberInside.textContent = currentQuestionIndex + 1;
@@ -356,18 +435,16 @@ function renderQuestion() {
   q.answers.forEach((answer, index) => {
     const div = document.createElement("div");
     div.className = "answer-option";
+    div.dataset.index = index;
     div.innerHTML = `<strong>${String.fromCharCode(65 + index)})</strong> ${answer}`;
     div.addEventListener("click", () => {
+      if (div.classList.contains("disabled-option")) return;
       document.querySelectorAll(".answer-option").forEach(el => el.classList.remove("selected"));
       div.classList.add("selected");
       selectedAnswerIndex = index;
     });
     answersContainer.appendChild(div);
   });
-}
-
-function getLevelKeyByQuestion(q) {
-  return q.level;
 }
 
 function swapCurrentQuestion() {
@@ -377,14 +454,89 @@ function swapCurrentQuestion() {
   }
 
   const current = questions[currentQuestionIndex];
-  const reserve = reserves[getLevelKeyByQuestion(current)];
-
+  const reserve = reserves[current.level];
   if (!reserve) return;
 
-  questions[currentQuestionIndex] = { ...reserve };
+  questions[currentQuestionIndex] = JSON.parse(JSON.stringify(reserve));
   swapUsed = true;
   btnSwapQuestion.disabled = true;
   renderQuestion();
+}
+
+function apply5050() {
+  if (fiftyUsed) {
+    alert("Já utilizaste a ajuda 50:50.");
+    return;
+  }
+
+  const q = questions[currentQuestionIndex];
+  const wrongIndexes = q.answers.map((_, i) => i).filter(i => i !== q.correct);
+  const shuffle = wrongIndexes.sort(() => Math.random() - 0.5);
+  const toRemove = shuffle.slice(0, 2);
+
+  document.querySelectorAll(".answer-option").forEach((el, idx) => {
+    if (toRemove.includes(idx)) {
+      el.classList.add("disabled-option");
+    }
+  });
+
+  if (selectedAnswerIndex !== null && toRemove.includes(selectedAnswerIndex)) {
+    selectedAnswerIndex = null;
+  }
+
+  fiftyUsed = true;
+  btn5050.disabled = true;
+}
+
+function useAudienceHelp() {
+  if (audienceUsed) {
+    alert("Já utilizaste a ajuda do público.");
+    return;
+  }
+
+  const q = questions[currentQuestionIndex];
+  const indices = [0, 1, 2, 3];
+  let percentages = [0, 0, 0, 0];
+  const correctUsuallyWins = Math.random() < 0.9;
+
+  if (correctUsuallyWins) {
+    let remaining = 100;
+    const correctPct = Math.floor(Math.random() * 27) + 52; // 52-78
+    percentages[q.correct] = correctPct;
+    remaining -= correctPct;
+
+    const wrongs = indices.filter(i => i !== q.correct);
+    const a = Math.floor(Math.random() * (remaining - 10));
+    const b = Math.floor(Math.random() * (remaining - a));
+    const c = remaining - a - b;
+    const wrongPcts = [a, b, c].sort(() => Math.random() - 0.5);
+
+    wrongs.forEach((idx, i) => percentages[idx] = wrongPcts[i]);
+  } else {
+    const wrongs = indices.filter(i => i !== q.correct);
+    const topWrong = wrongs[Math.floor(Math.random() * wrongs.length)];
+    percentages[topWrong] = Math.floor(Math.random() * 20) + 40; // 40-59
+    percentages[q.correct] = Math.floor(Math.random() * 15) + 20; // 20-34
+
+    let remaining = 100 - percentages[topWrong] - percentages[q.correct];
+    const otherWrongs = wrongs.filter(i => i !== topWrong);
+    const first = Math.floor(Math.random() * remaining);
+    const second = remaining - first;
+    percentages[otherWrongs[0]] = first;
+    percentages[otherWrongs[1]] = second;
+  }
+
+  audienceResults.innerHTML = "";
+  q.answers.forEach((answer, index) => {
+    const row = document.createElement("div");
+    row.className = "audience-row";
+    row.innerHTML = `<span><strong>${String.fromCharCode(65 + index)})</strong> ${answer}</span><span>${percentages[index]}%</span>`;
+    audienceResults.appendChild(row);
+  });
+
+  audienceBox.classList.remove("hidden");
+  audienceUsed = true;
+  btnAudience.disabled = true;
 }
 
 function submitAnswer() {
@@ -402,7 +554,9 @@ function submitAnswer() {
     answers: q.answers,
     chosen: selectedAnswerIndex,
     correct: q.correct,
-    isCorrect
+    isCorrect,
+    points: q.points,
+    level: q.level
   });
 
   if (currentQuestionIndex < questions.length - 1) {
@@ -421,23 +575,22 @@ function finishGame() {
   finalTime.textContent = formatTime(elapsed);
 
   const participant = {
-    fullName: document.getElementById("fullName").value.trim(),
-    firstLastName: getFirstLastName(document.getElementById("fullName").value.trim()),
+    fullName: currentParticipantData.fullName,
+    birthDate: currentParticipantData.birthDate,
+    education: currentParticipantData.education,
+    residence: currentParticipantData.residence,
+    nationality: currentParticipantData.nationality,
+    firstLastName: getFirstLastName(currentParticipantData.fullName),
     score,
     time: elapsed,
+    answersLog,
     timestamp: Date.now()
   };
 
-  saveParticipant(participant);
+  saveParticipantToActiveSession(participant);
   renderReview();
   renderRanking();
   showScreen("result");
-}
-
-function getFirstLastName(fullName) {
-  const parts = fullName.split(/\s+/).filter(Boolean);
-  if (parts.length <= 1) return fullName;
-  return `${parts[0]} ${parts[parts.length - 1]}`;
 }
 
 function renderReview() {
@@ -464,21 +617,26 @@ function renderReview() {
   });
 }
 
-function saveParticipant(participant) {
-  const data = JSON.parse(localStorage.getItem("quizRanking") || "[]");
-  data.push(participant);
+function saveParticipantToActiveSession(participant) {
+  const sessions = getSessions();
+  const activeId = getActiveSessionId();
+  const session = sessions.find(s => s.id === activeId);
+  if (!session) return;
 
-  data.sort((a, b) => {
+  session.participants.push(participant);
+
+  session.participants.sort((a, b) => {
     if (b.score !== a.score) return b.score - a.score;
     if (a.time !== b.time) return a.time - b.time;
     return a.timestamp - b.timestamp;
   });
 
-  localStorage.setItem("quizRanking", JSON.stringify(data));
+  saveSessions(sessions);
 }
 
 function renderRanking() {
-  const data = JSON.parse(localStorage.getItem("quizRanking") || "[]");
+  const session = getActiveSession();
+  const data = session ? session.participants : [];
 
   top3.innerHTML = "";
   rankingBody.innerHTML = "";
@@ -507,18 +665,127 @@ function renderRanking() {
   });
 }
 
-function resetGame() {
+function resetGameState() {
+  questions = cloneQuestions();
   currentQuestionIndex = 0;
   selectedAnswerIndex = null;
   startTimestamp = null;
   score = 0;
   answersLog = [];
   swapUsed = false;
+  fiftyUsed = false;
+  audienceUsed = false;
   btnSwapQuestion.disabled = false;
+  btn5050.disabled = false;
+  btnAudience.disabled = false;
+  audienceBox.classList.add("hidden");
+  audienceResults.innerHTML = "";
   clearInterval(timerInterval);
+}
 
-  // repor pergunta original se houve swap
-  questions[0] = questions[0];
+function openAdminMenu() {
+  const pass = prompt("Introduz a palavra-passe administrativa:");
+  if (pass !== ADMIN_PASSWORD) {
+    alert("Palavra-passe incorreta.");
+    return;
+  }
+
+  const action = prompt(
+    "Modo administrativo:\n" +
+    "1 - Ver sessão ativa\n" +
+    "2 - Criar nova sessão\n" +
+    "3 - Listar sessões\n" +
+    "4 - Exportar sessão ativa\n" +
+    "5 - Apagar participantes da sessão ativa\n" +
+    "6 - Apagar uma sessão pelo nome exato"
+  );
+
+  if (!action) return;
+
+  switch (action.trim()) {
+    case "1":
+      {
+        const s = getActiveSession();
+        alert(`Sessão ativa:\n${s.name}\nParticipantes: ${s.participants.length}`);
+      }
+      break;
+    case "2":
+      {
+        const name = prompt("Nome da nova sessão (ex.: Feira da Interculturalidade — 12/04/2026):");
+        if (!name) return;
+        const sessions = getSessions();
+        const newSession = {
+          id: `sessao-${Date.now()}`,
+          name,
+          createdAt: Date.now(),
+          participants: []
+        };
+        sessions.push(newSession);
+        saveSessions(sessions);
+        setActiveSessionId(newSession.id);
+        updateActiveSessionLabel();
+        renderRanking();
+        alert("Nova sessão criada e ativada.");
+      }
+      break;
+    case "3":
+      {
+        const sessions = getSessions();
+        const text = sessions.map((s, i) => `${i + 1}. ${s.name} (${s.participants.length} participantes)`).join("\n");
+        alert(text || "Sem sessões.");
+      }
+      break;
+    case "4":
+      {
+        const s = getActiveSession();
+        const text = JSON.stringify(s, null, 2);
+        navigator.clipboard.writeText(text).then(() => {
+          alert("Sessão ativa copiada para a área de transferência.");
+        }).catch(() => {
+          alert("Não foi possível copiar automaticamente. Consulta a consola.");
+          console.log(text);
+        });
+      }
+      break;
+    case "5":
+      {
+        const sessions = getSessions();
+        const activeId = getActiveSessionId();
+        const session = sessions.find(s => s.id === activeId);
+        if (!session) return;
+        const ok = confirm(`Apagar participantes da sessão ativa?\n\n${session.name}`);
+        if (!ok) return;
+        session.participants = [];
+        saveSessions(sessions);
+        renderRanking();
+        alert("Sessão ativa limpa.");
+      }
+      break;
+    case "6":
+      {
+        const name = prompt("Escreve o nome exato da sessão a apagar:");
+        if (!name) return;
+        let sessions = getSessions();
+        const activeId = getActiveSessionId();
+        const target = sessions.find(s => s.name === name);
+        if (!target) {
+          alert("Sessão não encontrada.");
+          return;
+        }
+        if (target.id === activeId) {
+          alert("Não podes apagar a sessão ativa. Cria/ativa outra primeiro.");
+          return;
+        }
+        const ok = confirm(`Apagar esta sessão?\n\n${target.name}`);
+        if (!ok) return;
+        sessions = sessions.filter(s => s.id !== target.id);
+        saveSessions(sessions);
+        alert("Sessão apagada.");
+      }
+      break;
+    default:
+      alert("Opção inválida.");
+  }
 }
 
 btnRules.addEventListener("click", () => {
@@ -541,7 +808,15 @@ registerForm.addEventListener("submit", (e) => {
     return;
   }
 
-  resetGame();
+  currentParticipantData = {
+    fullName: document.getElementById("fullName").value.trim(),
+    birthDate: document.getElementById("birthDate").value,
+    education: document.getElementById("education").value,
+    residence: document.getElementById("residence").value.trim(),
+    nationality: document.getElementById("nationality").value.trim()
+  };
+
+  resetGameState();
   showScreen("game");
   startTimestamp = Date.now();
   updateTimer();
@@ -551,6 +826,8 @@ registerForm.addEventListener("submit", (e) => {
 
 btnConfirmAnswer.addEventListener("click", submitAnswer);
 btnSwapQuestion.addEventListener("click", swapCurrentQuestion);
+btn5050.addEventListener("click", apply5050);
+btnAudience.addEventListener("click", useAudienceHelp);
 
 btnViewRanking.addEventListener("click", () => {
   renderRanking();
@@ -565,5 +842,21 @@ btnRankingHome.addEventListener("click", () => {
   showScreen("home");
 });
 
+adminTrigger.addEventListener("click", () => {
+  adminTapCount++;
+  if (adminTapTimer) clearTimeout(adminTapTimer);
+
+  adminTapTimer = setTimeout(() => {
+    adminTapCount = 0;
+  }, 1200);
+
+  if (adminTapCount >= 5) {
+    adminTapCount = 0;
+    openAdminMenu();
+  }
+});
+
 fillCountries();
+ensureDefaultSession();
+updateActiveSessionLabel();
 renderRanking();
