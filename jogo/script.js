@@ -64,15 +64,15 @@ const baseQuestions = [
   { id:"D2", level:"hard", points:30, text:"Qual destes países tem o islamismo como religião maioritária?", answers:["Índia","Bangladesh","Nepal","China"], correct:1 },
   { id:"D3", level:"hard", points:30, text:"Qual destes países tem mais línguas oficiais reconhecidas?", answers:["Bélgica","Suíça","África do Sul","Canadá"], correct:2 },
   { id:"D7", level:"hard", points:30, text:"Qual destas personalidades está corretamente associada ao respetivo país?", answers:["Pablo Neruda — Chile","Simón Bolívar — Argentina","Amílcar Cabral — Marrocos","Eva Perón — Venezuela"], correct:0 },
-  { id:"D9", level:"hard", points:30, text:"Qual destas combinações está correta?", answers:["Chile — Pablo Neruda — poesia","Chile — Simón Bolívar — teatro","Chile — Eva Perón — literatura","Chile — Martin Luther King Jr. — ensaio político"], correct:0 },
+  { id:"D9", level:"hard", points:30, text:"Quantos menus gastronómicos interculturais existem na Feira da Interculturalidade de Seia?", answers:["4 menus gastronómicos interculturais","5 menus gastronómicos interculturais","6 menus gastronómicos interculturais","7 menus gastronómicos interculturais"], correct:2 },
   { id:"MD13", level:"very_hard", points:50, text:"Que país já venceu um Prémio Nobel da Medicina?", answers:["Espanha","Itália","Portugal","Grécia"], correct:2 },
   { id:"MD14", level:"very_hard", points:50, text:"Guerra e Paz, uma das mais importantes obras da literatura mundial, foi escrita por quem?", answers:["Ernest Hemingway","Fiódor Dostoiévski","Victor Hugo","Liev Tolstói"], correct:3 },
-  { id:"MD15", level:"very_hard", points:50, text:"Qual destas personalidades está corretamente associada à Índia?", answers:["Rabindranath Tagore","Muhammad Iqbal","Premchand","Bankim Chandra Chattopadhyay"], correct:0 }
+  { id:"MD15", level:"very_hard", points:50, text:"Quantas nacionalidades diferentes estão representadas entre os alunos da Escola Dr. Guilherme Correia de Carvalho, em Seia?", answers:["6 nacionalidades","9 nacionalidades","12 nacionalidades","15 nacionalidades"], correct:3 }
 ];
 
 const reserves = {
   easy: { id:"F9", level:"easy", points:10, text:"Qual destas práticas favorece melhor a inclusão num ambiente intercultural?", answers:["Valorizar diferentes línguas, tradições e experiências","Escolher apenas uma referência cultural para todos","Evitar qualquer tema cultural","Separar grupos por nacionalidade"], correct:0 },
-  medium: { id:"M6", level:"medium", points:20, text:"Qual destas personalidades está mais associada à Venezuela?", answers:["Simón Bolívar","José Martí","Benito Juárez","José de San Martín"], correct:0 },
+  medium: { id:"M6", level:"medium", points:20, text:"Qual destas personalidades está mais associada à Venezuela?", answers:["Benito Juárez","José Martí","Simón Bolívar","José de San Martín"], correct:2 },
   hard: { id:"RD2", level:"hard", points:30, text:"Qual destes países utiliza o dirham como moeda oficial?", answers:["Marrocos","Tunísia","Argélia","Egito"], correct:0 },
   very_hard: { id:"MD6", level:"very_hard", points:50, text:"Qual destes países tem um Prémio Nobel da Literatura?", answers:["Portugal","Argentina","Venezuela","Marrocos"], correct:0 }
 };
