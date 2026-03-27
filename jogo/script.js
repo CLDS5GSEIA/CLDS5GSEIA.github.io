@@ -54,14 +54,14 @@ const countries = [
 
 const baseQuestions = [
   { id:"F6", level:"easy", points:10, text:"O que significa interculturalidade?", answers:["A convivência e interação respeitosa entre culturas diferentes","A substituição de uma cultura por outra","A separação total entre grupos culturais","A existência de uma única cultura dominante"], correct:0 },
-  { id:"F7", level:"easy", points:10, text:"Num contexto intercultural, qual destas atitudes é mais adequada?", answers:["Respeitar diferenças culturais e promover diálogo","Ignorar todas as diferenças culturais","Obrigar todos a seguir os mesmos costumes","Evitar o contacto entre pessoas de origens diferentes"], correct:0 },
+  { id:"F7", level:"easy", points:10, text:"Num contexto intercultural, qual destas atitudes é mais adequada?", answers:["Evitar o contacto entre pessoas de origens diferentes","Ignorar todas as diferenças culturais","Obrigar todos a seguir os mesmos costumes","Respeitar diferenças culturais e promover diálogo"], correct:3 },
   { id:"F8", level:"easy", points:10, text:"A diversidade cultural pode ser entendida como:", answers:["Um obstáculo ao convívio","Uma riqueza que amplia perspetivas e aprendizagens","Um problema a evitar","Uma realidade sem importância social"], correct:1 },
   { id:"M1", level:"medium", points:20, text:"Qual destas personalidades está associada à luta contra o apartheid na África do Sul?", answers:["Martin Luther King Jr.","Nelson Mandela","Amílcar Cabral","Yasser Arafat"], correct:1 },
   { id:"M2", level:"medium", points:20, text:"Qual destas instituições está mais diretamente associada à proteção internacional dos direitos das crianças?", answers:["UNESCO","UNICEF","ACNUR","OIM"], correct:1 },
   { id:"M4", level:"medium", points:20, text:"Qual destas personalidades está mais associada à Argentina?", answers:["Eva Perón","Frida Kahlo","Simón Bolívar","Pablo Neruda"], correct:0 },
   { id:"M7", level:"medium", points:20, text:"Qual destes países tem a maior população?", answers:["Marrocos","Argentina","Venezuela","Portugal"], correct:1 },
   { id:"M8", level:"medium", points:20, text:"Qual destes países tem um Prémio Nobel da Literatura?", answers:["Chile","Venezuela","Palestina","Marrocos"], correct:0 },
-  { id:"D2", level:"hard", points:30, text:"Qual destes países tem o islamismo como religião maioritária?", answers:["Índia","Bangladesh","Nepal","China"], correct:1 },
+  { id:"D2", level:"hard", points:30, text:"Qual destes países tem o islamismo como religião maioritária?", answers:["Índia","China","Nepal","Bangladesh"], correct:3 },
   { id:"D3", level:"hard", points:30, text:"Qual destes países tem mais línguas oficiais reconhecidas?", answers:["Bélgica","Suíça","África do Sul","Canadá"], correct:2 },
   { id:"D7", level:"hard", points:30, text:"Qual destas personalidades está corretamente associada ao respetivo país?", answers:["Pablo Neruda — Chile","Simón Bolívar — Argentina","Amílcar Cabral — Marrocos","Eva Perón — Venezuela"], correct:0 },
   { id:"D9", level:"hard", points:30, text:"Quantos menus gastronómicos interculturais existem na Feira da Interculturalidade de Seia?", answers:["4 menus gastronómicos interculturais","5 menus gastronómicos interculturais","6 menus gastronómicos interculturais","7 menus gastronómicos interculturais"], correct:2 },
