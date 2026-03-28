@@ -405,3 +405,19 @@ input[list] {
 #school-other-wrap {
   margin-bottom: 16px;
 }
+
+.cofinancing-bar {
+  width: 100%;
+  background: #ffffff;
+  border-top: 1px solid var(--line);
+  margin-top: 24px;
+  padding: 10px 16px;
+}
+
+.cofinancing-image {
+  display: block;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: auto;
+}
