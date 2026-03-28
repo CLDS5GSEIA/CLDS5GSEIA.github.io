@@ -796,14 +796,31 @@ registerForm.addEventListener("submit", (e) => {
     return;
   }
 
-  currentParticipantData = {
-    fullName: document.getElementById("fullName").value.trim(),
-    birthDate: document.getElementById("birthDate").value,
-    education: document.getElementById("education").value,
-    residence: document.getElementById("residence").value.trim(),
-    nationality: document.getElementById("nationality").value.trim()
-  };
+if (schoolSelect.value === "Outro" && !schoolOtherInput.value.trim()) {
+  alert("Escreve o nome do estabelecimento de ensino.");
+  return;
+}
 
+if (!classGroupInput.value.trim()) {
+  alert("Indica a turma.");
+  return;
+}
+
+const selectedSchool = schoolSelect.value;
+const finalSchool = selectedSchool === "Outro"
+  ? schoolOtherInput.value.trim()
+  : selectedSchool;
+  
+  currentParticipantData = {
+  fullName: document.getElementById("fullName").value.trim(),
+  birthDate: document.getElementById("birthDate").value,
+  education: document.getElementById("education").value,
+  residence: document.getElementById("residence").value.trim(),
+  nationality: document.getElementById("nationality").value.trim(),
+  school: finalSchool,
+  schoolSelection: selectedSchool,
+  classGroup: classGroupInput.value.trim()
+};
   resetGameState();
   showScreen("game");
   startTimestamp = Date.now();
