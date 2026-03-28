@@ -100,6 +100,25 @@
               <datalist id="countries"></datalist>
             </label>
 
+<label>Estabelecimento de Ensino
+  <select id="school" required>
+    <option value="">Selecionar...</option>
+    <option value="Escola Básica de Seia">Escola Básica de Seia</option>
+    <option value="Escola Secundária de Seia">Escola Secundária de Seia</option>
+    <option value="Outro">Outro</option>
+  </select>
+</label>
+
+<div id="school-other-wrap" class="hidden">
+  <label>Outro estabelecimento de ensino
+    <input type="text" id="schoolOther" placeholder="Escreve o nome do estabelecimento" />
+  </label>
+</div>
+
+<label>Turma
+  <input type="text" id="classGroup" required placeholder="Ex.: 10.º A" />
+</label>
+            
             <div class="rgpd-box">
               <label class="checkbox-row">
                 <input type="checkbox" id="rgpdConsent" required />
