@@ -135,6 +135,11 @@ const audienceResults = document.getElementById("audience-results");
 const activeSessionNameEl = document.getElementById("active-session-name");
 const adminTrigger = document.getElementById("admin-trigger");
 
+const schoolSelect = document.getElementById("school");
+const schoolOtherWrap = document.getElementById("school-other-wrap");
+const schoolOtherInput = document.getElementById("schoolOther");
+const classGroupInput = document.getElementById("classGroup");
+
 function cloneQuestions() {
   return JSON.parse(JSON.stringify(baseQuestions));
 }
@@ -165,6 +170,17 @@ function fillCountries() {
     option.value = country;
     countriesDatalist.appendChild(option);
   });
+}
+
+function toggleSchoolOtherField() {
+  if (schoolSelect.value === "Outro") {
+    schoolOtherWrap.classList.remove("hidden");
+    schoolOtherInput.required = true;
+  } else {
+    schoolOtherWrap.classList.add("hidden");
+    schoolOtherInput.required = false;
+    schoolOtherInput.value = "";
+  }
 }
 
 function getTodayPT() {
@@ -733,6 +749,8 @@ async function openAdminMenu() {
   }
 }
 
+schoolSelect.addEventListener("change", toggleSchoolOtherField);
+
 btnRules.addEventListener("click", () => {
   const isHidden = rulesBox.classList.contains("hidden");
   if (isHidden) {
@@ -828,6 +846,7 @@ adminTrigger.addEventListener("click", () => {
 async function init() {
   await signInAnonymously(auth);
   fillCountries();
+  toggleSchoolOtherField();
   await ensureSharedDefaultSession();
   await loadActiveSession();
 }
