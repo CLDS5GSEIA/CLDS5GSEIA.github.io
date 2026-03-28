@@ -196,6 +196,27 @@ function getFirstLastName(fullName) {
   if (parts.length <= 1) return fullName;
   return `${parts[0]} ${parts[parts.length - 1]}`;
 }
+function normalizeText(value) {
+  return (value || "")
+    .toString()
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ");
+}
+
+function buildParticipantKey(data) {
+  return [
+    normalizeText(data.fullName),
+    normalizeText(data.birthDate),
+    normalizeText(data.school),
+    normalizeText(data.classGroup)
+  ].join("|");
+}
+function getLocalParticipationKey(sessionId, participantData) {
+  return `quiz_participation_${sessionId}_${buildParticipantKey(participantData)}`;
+}
 function updateActiveSessionLabel() {
   if (activeSessionData && activeSessionData.name) {
     activeSessionNameEl.textContent = `${activeSessionData.name} (ativa)`;
@@ -446,6 +467,24 @@ function renderRankingData(data) {
       <td>${formatTime(item.time || 0)}</td>
     `;
     rankingBody.appendChild(tr);
+  });
+}
+
+async function participantAlreadyExistsInActiveSession(participantData) {
+  if (!activeSessionId) return false;
+
+  const participantKey = buildParticipantKey(participantData);
+  const participantsSnap = await getDocs(collection(db, "sessions", activeSessionId, "participants"));
+
+  return participantsSnap.docs.some(docSnap => {
+    const existing = docSnap.data();
+    const existingKey = buildParticipantKey({
+      fullName: existing.fullName,
+      birthDate: existing.birthDate,
+      school: existing.school,
+      classGroup: existing.classGroup
+    });
+    return existingKey === participantKey;
   });
 }
 
@@ -790,7 +829,7 @@ btnBackHome.addEventListener("click", () => {
   showScreen("home");
 });
 
-registerForm.addEventListener("submit", (e) => {
+registerForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   if (!activeSessionId) {
@@ -828,12 +867,23 @@ const finalSchool = selectedSchool === "Outro"
   schoolSelection: selectedSchool,
   classGroup: classGroupInput.value.trim()
 };
+  const localParticipationKey = getLocalParticipationKey(activeSessionId, currentParticipantData);
+
+if (localStorage.getItem(localParticipationKey)) {
+  alert("Este dispositivo já foi usado para registar este participante nesta sessão.");
+  return;
+}
+  if (await participantAlreadyExistsInActiveSession(currentParticipantData)) {
+  alert("Este participante já se encontra registado nesta sessão e não pode jogar novamente.");
+  return;
+}
   resetGameState();
   showScreen("game");
   startTimestamp = Date.now();
   updateTimer();
   timerInterval = setInterval(updateTimer, 1000);
   renderQuestion();
+  localStorage.setItem(localParticipationKey, "true");
 });
 
 btnConfirmAnswer.addEventListener("click", submitAnswer);
