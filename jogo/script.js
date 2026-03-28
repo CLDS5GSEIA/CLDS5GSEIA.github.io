@@ -471,6 +471,9 @@ async function finishGame() {
     education: currentParticipantData.education,
     residence: currentParticipantData.residence,
     nationality: currentParticipantData.nationality,
+    school: currentParticipantData.school,
+schoolSelection: currentParticipantData.schoolSelection,
+classGroup: currentParticipantData.classGroup,
     firstLastName: getFirstLastName(currentParticipantData.fullName),
     score,
     time: elapsed,
@@ -615,32 +618,36 @@ async function openAdminMenu() {
   };
 
   const headers = [
-    "Posição",
-    "Classificação",
-    "Sessão",
-    "Nome completo",
-    "Data de nascimento",
-    "Escolaridade",
-    "Residência",
-    "Nacionalidade",
-    "Pontuação",
-    "Tempo",
-    "Data/hora da submissão"
-  ];
+  "Posição",
+  "Classificação",
+  "Sessão",
+  "Nome completo",
+  "Data de nascimento",
+  "Escolaridade",
+  "Residência",
+  "Nacionalidade",
+  "Estabelecimento de Ensino",
+  "Turma",
+  "Pontuação",
+  "Tempo",
+  "Data/hora da submissão"
+];
 
-  const rows = participants.map((p, index) => [
-    index + 1,
-    getClassificationLabel(index),
-    activeSessionData.name || "",
-    p.fullName || "",
-    p.birthDate || "",
-    p.education || "",
-    p.residence || "",
-    p.nationality || "",
-    p.score ?? "",
-    p.time ?? "",
-    formatSubmissionDate(p.timestampMs)
-  ]);
+ const rows = participants.map((p, index) => [
+  index + 1,
+  getClassificationLabel(index),
+  activeSessionData.name || "",
+  p.fullName || "",
+  p.birthDate || "",
+  p.education || "",
+  p.residence || "",
+  p.nationality || "",
+  p.school || "",
+  p.classGroup || "",
+  p.score ?? "",
+  p.time ?? "",
+  formatSubmissionDate(p.timestampMs)
+]);
 
   const escapeCsv = (value) => {
     const text = String(value ?? "");
