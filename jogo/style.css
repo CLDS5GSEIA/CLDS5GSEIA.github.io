@@ -410,8 +410,8 @@ input[list] {
   width: 100%;
   background: #ffffff;
   border-top: 1px solid var(--line);
-  margin-top: 16px;
-  padding: 8px 16px;
+  margin-top: 6px;
+  padding: 6px 16px;
 }
 
 
