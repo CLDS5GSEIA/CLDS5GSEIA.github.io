@@ -401,3 +401,7 @@ input[list] {
 #rules-box li + li {
   margin-top: 8px;
 }
+
+#school-other-wrap {
+  margin-bottom: 16px;
+}
