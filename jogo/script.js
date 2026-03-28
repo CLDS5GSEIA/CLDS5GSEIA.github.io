@@ -428,9 +428,14 @@ function subscribeRanking() {
       const data = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
 
       data.sort((a, b) => {
-        if ((b.score || 0) !== (a.score || 0)) return (b.score || 0) - (a.score || 0);
-        if ((a.time || 0) !== (b.time || 0)) return (a.time || 0) - (b.time || 0);
-        return (a.timestampMs || 0) - (b.timestampMs || 0);
+       if ((b.score || 0) !== (a.score || 0)) return (b.score || 0) - (a.score || 0);
+if ((a.time || 0) !== (b.time || 0)) return (a.time || 0) - (b.time || 0);
+
+const finalScoreA = getFinalQuestionsScore(a);
+const finalScoreB = getFinalQuestionsScore(b);
+if (finalScoreB !== finalScoreA) return finalScoreB - finalScoreA;
+
+return (a.timestampMs || 0) - (b.timestampMs || 0);
       });
 
       renderRankingData(data);
@@ -440,6 +445,14 @@ function subscribeRanking() {
       alert("Erro ao carregar ranking. Vê a consola do browser.");
     }
   );
+}
+
+function getFinalQuestionsScore(item) {
+  if (!item.answersLog || !Array.isArray(item.answersLog)) return 0;
+
+  return item.answersLog
+    .slice(-5)
+    .reduce((sum, answer) => sum + (answer.isCorrect ? (answer.points || 0) : 0), 0);
 }
 
 function renderRankingData(data) {
