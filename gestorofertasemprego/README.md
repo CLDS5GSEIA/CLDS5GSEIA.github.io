@@ -159,3 +159,13 @@ Adicionado ecrã de login com Firebase Authentication. As ofertas passam a ser c
 ## v40 — Pesquisa assistida real
 
 O botão “Pesquisar” passa a abrir a fonte selecionada com os filtros indicados, em nova janela/aba. A app deixa de criar resultados simulados. O técnico deve confirmar a oferta na fonte, copiar o texto e importar por copiar/colar para validação.
+
+
+## v41 — ajuste visual do botão de pesquisa
+
+O botão “Abrir pesquisa na fonte” passa a usar o mesmo estilo visual dos restantes botões primários da app.
+
+
+## v42 — BEP / Emprego Público e importação melhorada
+
+Acrescentada a fonte “BEP / Emprego Público” nas listas de pesquisa/importação. A pesquisa assistida abre o portal BEP. A organização automática do texto foi reforçada para formatos de emprego público e para melhor extração de entidade, referência, local, perfil, funções, condições e candidatura.

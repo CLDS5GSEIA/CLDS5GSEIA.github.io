@@ -740,6 +740,11 @@ function buildSearchUrl(fonte, keyword, localidade, dataMin){
     return `https://www.manpowergroup.pt/empregos/?search=${enc(q)}`;
   }
 
+  if(fonteNorm.includes("bep") || fonteNorm.includes("emprego publico") || fonteNorm.includes("emprego público")){
+    // BEP — Bolsa de Emprego Público. A pesquisa/filtragem pode exigir ajuste manual no portal.
+    return `https://www.bep.gov.pt/`;
+  }
+
   if(fonteNorm.includes("sapo")){
     return `https://emprego.sapo.pt/pesquisa?keyword=${enc(q)}`;
   }
@@ -762,6 +767,9 @@ function fonteSearchHelp(fonte){
   }
   if(f.includes("net")){
     return "No Net-Empregos, abra a oferta pretendida, confirme que está ativa e copie o texto completo da página.";
+  }
+  if(f.includes("bep") || f.includes("emprego publico") || f.includes("emprego público")){
+    return "No BEP / Emprego Público, confirme o procedimento, entidade, carreira/categoria, local de trabalho, prazo e forma de candidatura antes de importar.";
   }
   if(f.includes("randstad") || f.includes("manpower") || f.includes("indeed") || f.includes("sapo")){
     return "Abra a oferta, confirme a validade e copie a informação relevante para a área de importação.";
@@ -893,7 +901,7 @@ function findDatePT(text){
   return `${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`;
 }
 function inferLocal(text){
-  const locais = ["Seia","Gouveia","Nelas","Oliveira do Hospital","Mangualde","Manteigas","Celorico da Beira","Fornos de Algodres","Loriga","Sabugueiro","São Romão","Pinhanços","Sazes da Beira","Vide","Cabeça","Carragozela","Várzea de Meruge","Vila Chã","São Martinho"];
+  const locais = ["Seia","Gouveia","Guarda","Nelas","Oliveira do Hospital","Mangualde","Manteigas","Celorico da Beira","Fornos de Algodres","Loriga","Sabugueiro","São Romão","Pinhanços","Sazes da Beira","Vide","Cabeça","Carragozela","Várzea de Meruge","Vila Chã","São Martinho","Valezim","Travancinha","Sandomil","São Martinho","Sameice"];
   const lower = text.toLowerCase();
   return locais.find(l => lower.includes(l.toLowerCase())) || "";
 }
@@ -1123,8 +1131,166 @@ function extractSectionByHeadings(text, startNames, stopNames){
 }
 
 
+
+function isBEPText(text){
+  return /(BEP|Bolsa de Emprego P[úu]blico|Caracteriza[çc][ãa]o do Posto de Trabalho|Rela[çc][ãa]o Jur[íi]dica|Procedimento Concursal|Oferta de Emprego P[úu]blico)/i.test(text);
+}
+
+function getFieldAfterLabel(lines, labels){
+  const labs = labels.map(x => normalizeSearchText(x));
+  const isLabel = s => labs.includes(normalizeSearchText(String(s||"").replace(/:$/,"")));
+  for(let i=0;i<lines.length;i++){
+    const line = String(lines[i]||"").trim();
+    const same = line.match(/^([^:]{2,80}):\s*(.+)$/);
+    if(same && labs.includes(normalizeSearchText(same[1]))){
+      return same[2].trim();
+    }
+    if(isLabel(line)){
+      for(let j=i+1;j<Math.min(lines.length, i+5);j++){
+        const v = String(lines[j]||"").trim();
+        if(v && !/^[A-ZÁÉÍÓÚÂÊÔÃÕÇ\s\/-]{3,}:?$/.test(v)) return v;
+        if(v && j === i+1) return v;
+      }
+    }
+  }
+  return "";
+}
+
+function sectionAfterAnyLabel(lines, labels, stopLabels){
+  const labs = labels.map(x => normalizeSearchText(x));
+  const stops = stopLabels.map(x => normalizeSearchText(x));
+  const normLine = s => normalizeSearchText(String(s||"").replace(/:$/,""));
+  let start = -1;
+  for(let i=0;i<lines.length;i++){
+    const n = normLine(lines[i]);
+    if(labs.includes(n) || labs.some(l => n.startsWith(l))){
+      start = i + 1;
+      break;
+    }
+  }
+  if(start < 0) return "";
+  let end = lines.length;
+  for(let i=start;i<lines.length;i++){
+    const n = normLine(lines[i]);
+    if(stops.includes(n) || stops.some(s => n.startsWith(s))){
+      end = i;
+      break;
+    }
+  }
+  return lines.slice(start,end).join("\n").trim();
+}
+
+function parseBEPText(raw, fonte, link){
+  const text = normalizeWhitespace(raw);
+  const strip = s => String(s || "")
+    .replace(/[\u2022\u25cf\u25aa\uf0b7]/g, "")
+    .replace(/\u00a0/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  const lines = text.split("\n").map(strip).filter(Boolean);
+
+  const ref = getFieldAfterLabel(lines, ["Código da Oferta", "Código BEP", "Referência", "Ref."]) || findRef(text);
+  const entidade = getFieldAfterLabel(lines, ["Entidade", "Organismo", "Serviço", "Entidade Empregadora", "Órgão/Serviço"]) || inferEntityExplicit(text);
+  const carreira = getFieldAfterLabel(lines, ["Carreira", "Carreira/Categoria", "Categoria", "Cargo"]);
+  const local = getFieldAfterLabel(lines, ["Local Trabalho", "Local de Trabalho", "Localidade", "Distrito", "Concelho"]) || inferLocal(text);
+  const vagas = getFieldAfterLabel(lines, ["Número de Postos de Trabalho", "N.º de Postos", "N.º de Vagas", "Número de vagas"]);
+  const prazo = getFieldAfterLabel(lines, ["Prazo de candidatura", "Data limite", "Prazo"]);
+  const contrato = getFieldAfterLabel(lines, ["Tipo de vínculo", "Relação Jurídica", "Relação Jurídica de Emprego Público", "Vínculo"]);
+  const habil = getFieldAfterLabel(lines, ["Habilitação Literária", "Habilitações", "Nível Habilitacional"]);
+  const candidatura = getFieldAfterLabel(lines, ["Forma de candidatura", "Formalização das candidaturas", "Candidatura"]);
+  const dataOferta = findDatePT(text);
+
+  const tituloCandidates = [
+    getFieldAfterLabel(lines, ["Posto de Trabalho", "Caracterização do Posto de Trabalho", "Oferta", "Título"]),
+    carreira,
+    lines.find(l => /procedimento concursal|técnico|assistente|carreira|categoria/i.test(l) && l.length < 120)
+  ].filter(Boolean);
+  let titulo = tituloCandidates[0] || "Oferta de emprego público";
+  if(carreira && !titulo.toLowerCase().includes(carreira.toLowerCase())) titulo = `${carreira} — ${titulo}`;
+
+  const stop = ["Requisitos", "Habilitação", "Habilitações", "Perfil", "Métodos de Seleção", "Forma de candidatura", "Prazo", "Local de Trabalho", "Remuneração", "Observações"];
+  const funcoesRaw = sectionAfterAnyLabel(lines, ["Caracterização do Posto de Trabalho", "Descrição do posto de trabalho", "Atividades", "Funções"], stop);
+  const requisitosRaw = [
+    habil ? `Habilitações: ${habil}` : "",
+    sectionAfterAnyLabel(lines, ["Requisitos", "Requisitos de Admissão", "Perfil"], ["Métodos de Seleção", "Forma de candidatura", "Prazo", "Caracterização", "Local de Trabalho", "Remuneração"])
+  ].filter(Boolean).join("\n");
+  const condicoesRaw = [
+    contrato ? `Vínculo: ${contrato}` : "",
+    vagas ? `N.º de postos/vagas: ${vagas}` : "",
+    prazo ? `Prazo de candidatura: ${prazo}` : "",
+    getFieldAfterLabel(lines, ["Remuneração", "Posição Remuneratória", "Remuneração Base"]) ? `Remuneração: ${getFieldAfterLabel(lines, ["Remuneração", "Posição Remuneratória", "Remuneração Base"])}` : ""
+  ].filter(Boolean).join("\n");
+
+  const candidaturaSection = extractByHeading(
+    ["Candidatura", "Candidaturas", "Candidate-se", "Envio de CV", "Enviar CV", "Forma de candidatura", "Formalização das candidaturas"],
+    ["Funções", "Função", "Responsabilidades", "Principais responsabilidades", "Perfil", "Perfil pretendido", "Requisitos", "Condições", "Oferta", "Oferecemos", "Benefícios", "Local"]
+  );
+
+  let contacto = "";
+  let origemContacto = "";
+  const email = findEmail(text);
+  if(email){
+    contacto = email;
+    origemContacto = "Visível publicamente na oferta";
+  } else if(candidatura){
+    contacto = candidatura;
+    origemContacto = "Visível publicamente na oferta";
+  } else if(link){
+    contacto = "Candidatura através da plataforma BEP / Emprego Público";
+    origemContacto = "Candidatura apenas pela plataforma";
+  }
+
+  return {
+    id: crypto.randomUUID(),
+    titulo: titulo || "Oferta BEP / Emprego Público",
+    entidade,
+    area: carreira || "Emprego Público",
+    vagas: vagas || "",
+    localidade: local,
+    concelho: local || "Seia",
+    fonte: fonte || "BEP / Emprego Público",
+    referencia: ref,
+    link: link || "",
+    dataOferta,
+    dataConsulta: todayPT(),
+    dataLimite: "",
+    contrato,
+    horario: "",
+    remuneracao: "",
+    estado: "pendente",
+    dataInativacao:"",
+    motivoInativacao:"",
+    dataValidacao:"",
+    dataExportPdf:"",
+    dataExportFacebook:"",
+    importadaPor:tecnicoAtual(),
+    validadaPor:"",
+    exportPdfPor:"",
+    exportFacebookPor:"",
+    inativadaPor:"",
+    contacto,
+    origemContacto,
+    tecnicoResponsavel: "",
+    resumoFacebook: [
+      entidade ? `Entidade: ${entidade}.` : "",
+      local ? `Local: ${local}.` : "",
+      carreira ? `Carreira/categoria: ${carreira}.` : "",
+      prazo ? `Prazo de candidatura: ${prazo}.` : ""
+    ].filter(Boolean).join(" "),
+    funcoes: cleanBullets(funcoesRaw),
+    requisitos: cleanBullets(requisitosRaw),
+    condicoes: cleanBullets(condicoesRaw),
+    observacoes: "Oferta BEP / Emprego Público organizada automaticamente a partir de texto copiado/colado. Validar manualmente no portal oficial antes de publicar."
+  };
+}
+
+
 function parseRawOffer(raw, fonte, link){
   const text = normalizeWhitespace(raw);
+
+  if(isBEPText(text) || normalizeSearchText(fonte || "").includes("bep") || normalizeSearchText(fonte || "").includes("emprego publico")){
+    return parseBEPText(raw, fonte, link);
+  }
 
   if(isIEFPText(text) || String(fonte || "").toLowerCase().includes("iefp")){
     return parseIEFPText(raw, fonte, link);
@@ -1132,7 +1298,7 @@ function parseRawOffer(raw, fonte, link){
 
   const strip = s => String(s || "")
     .replace(/[\u2022\u25cf\u25aa\uf0b7]/g, "")   // • ● ▪ 
-    .replace(/[🔧📍📩📢🍽️🔹]/g, "")
+    .replace(/[🔧📍📩📢🍽️🔹✅➡️]/g, "")
     .replace(/\u00a0/g, " ")
     .replace(/\s+/g, " ")
     .trim();
@@ -1142,7 +1308,7 @@ function parseRawOffer(raw, fonte, link){
   // Título: primeira linha útil
   let titulo = "";
   for(const line of lines){
-    if(/^(proposta\s*\d*|detalhe da oferta|oferta de emprego|guarda)$/i.test(line)) continue;
+    if(/^(proposta\s*\d*|detalhe da oferta|oferta de emprego|oferta de emprego público|bep|guarda|portugal)$/i.test(line)) continue;
     if(/^Ref\s*:/i.test(line)) continue;
     if(/^\d{1,2}[-/]\d{1,2}[-/]20\d{2}/.test(line)) continue;
     titulo = line;
@@ -1207,17 +1373,17 @@ function parseRawOffer(raw, fonte, link){
   }
 
   let funcoesRaw = extractByHeading(
-    ["Funções", "Função", "Responsabilidades", "Principais responsabilidades", "Descrição da Função"],
+    ["Funções", "Função", "Responsabilidades", "Principais responsabilidades", "Descrição da Função", "Caracterização do Posto de Trabalho", "Descrição do posto de trabalho"],
     ["Perfil", "Perfil pretendido", "Requisitos", "Condições", "Oferta", "Oferecemos", "Benefícios", "Candidatura", "Candidaturas", "Candidate-se", "Envie", "Enviar CV", "Local"]
   );
 
   let requisitosRaw = extractByHeading(
-    ["Perfil", "Perfil pretendido", "Requisitos", "Competências", "O que procuramos em ti"],
+    ["Perfil", "Perfil pretendido", "Requisitos", "Requisitos de Admissão", "Competências", "Habilitações", "Habilitação Literária", "O que procuramos em ti"],
     ["Funções", "Função", "Responsabilidades", "Principais responsabilidades", "Condições", "Oferta", "Oferecemos", "Benefícios", "Candidatura", "Candidaturas", "Candidate-se", "Envie", "Enviar CV", "Local"]
   );
 
   let condicoesRaw = extractByHeading(
-    ["Condições", "Oferta", "Oferecemos", "Benefícios", "Condições oferecidas", "Principais Benefícios"],
+    ["Condições", "Oferta", "Oferecemos", "Benefícios", "Condições oferecidas", "Principais Benefícios", "Relação Jurídica", "Tipo de vínculo"],
     ["Funções", "Função", "Responsabilidades", "Principais responsabilidades", "Perfil", "Perfil pretendido", "Requisitos", "Candidatura", "Candidaturas", "Candidate-se", "Envie", "Enviar CV", "Local"]
   );
 
@@ -1242,6 +1408,9 @@ function parseRawOffer(raw, fonte, link){
     origemContacto = "Visível publicamente na oferta";
   } else if(phone){
     contacto = phone;
+    origemContacto = "Visível publicamente na oferta";
+  } else if(candidaturaSection){
+    contacto = cleanBullets(candidaturaSection);
     origemContacto = "Visível publicamente na oferta";
   } else if(link){
     contacto = "Candidatura através da plataforma/origem da oferta";
