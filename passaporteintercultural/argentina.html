@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Argentina — Passaporte do Explorador Cultural</title>
+<style>
+:root{--bg:#f4f7fb;--text:#17324d;--muted:#60748a;--card:#fff;--line:#d9e5ef;--brand:#1f4e79;--accent:#f6a623;--shadow:0 10px 28px rgba(22,45,76,.08)}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+.wrap{max-width:1320px;margin:0 auto;padding:0 22px 30px}
+
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:18px 0}
+.linkback{font-weight:800;color:var(--brand)}
+
+.country-page .header{display:grid;grid-template-columns:160px 1fr auto;gap:18px;align-items:center}
+.flag-box{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.flag-box img{width:100%;height:100px;object-fit:contain;background:#fff}
+
+.country-page h1{margin:0;font-size:42px}
+.country-page .content{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;margin-top:18px}
+
+.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.info-card{background:#f7fbff;border:1px solid var(--line);border-radius:16px;padding:14px}
+.label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+.value{font-size:18px;line-height:1.35;font-weight:700;margin-top:6px}
+
+.image-card{overflow:hidden;border-radius:18px;border:1px solid var(--line);background:#fff}
+.image-card img{width:100%;height:320px;object-fit:contain;background:#fff}
+
+.person-row{display:grid;grid-template-columns:170px 1fr;gap:16px;align-items:start}
+.person-photo{border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#fff}
+.person-photo img{width:100%;height:220px;object-fit:contain;background:#fff}
+
+.culture-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.small-card{background:#f8fbff;border:1px solid var(--line);border-radius:18px;padding:14px}
+.food-card{background:#fff7ea}
+
+.curiosities ul{margin:10px 0 0 18px;padding:0}
+.curiosities li{margin:8px 0;line-height:1.45}
+
+.quiz .qblock{background:#f8fbff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:12px}
+.quiz .answers label{display:block;background:#fff;border:1px solid var(--line);padding:10px 12px;border-radius:10px;margin-top:8px;cursor:pointer}
+.quiz .submit{margin-top:14px}
+
+.btn{display:inline-block;background:var(--brand);color:#fff;padding:12px 16px;border-radius:14px;font-weight:800}
+
+.sigla{padding:6px 10px;border-radius:999px;background:#eef5fb;border:1px solid var(--line);font-weight:800;color:#44627e;font-size:14px}
+.subtitle{font-size:18px;color:var(--muted)}
+
+@media (max-width:1100px){
+  .country-page .content{grid-template-columns:1fr}
+}
+@media (max-width:700px){
+  .country-page .header{grid-template-columns:1fr}
+  .info-grid,.culture-grid,.person-row{grid-template-columns:1fr}
+  .country-page h1{font-size:34px}
+}
+</style>
+<script>
+const CORRECT={"q1":1,"q2":1,"q3":1};
+function checkQuiz(){
+  const blocks=document.querySelectorAll('.qblock');
+  blocks.forEach((b,i)=>{
+    const old=b.querySelector('.feedback-msg');
+    if(old) old.remove();
+    const chosen=b.querySelector('input:checked');
+    const result=document.createElement('div');
+    result.className='feedback-msg';
+    result.style.marginTop='8px';
+    result.style.fontWeight='700';
+    if(chosen){
+      if(Number(chosen.value)===CORRECT['q'+(i+1)]){
+        result.innerHTML='✔️ Resposta correta';
+        result.style.color='green';
+      }else{
+        result.innerHTML='❌ Resposta incorreta';
+        result.style.color='red';
+      }
+    }else{
+      result.innerHTML='⚠️ Sem resposta';
+      result.style.color='orange';
+    }
+    b.appendChild(result);
+  });
+}
+</script>
+</head>
+<body>
+<div class="wrap country-page">
+  <div class="topbar">
+    <a class="linkback" href="index.html#paises">← Voltar à página inicial</a>
+  </div>
+
+  <div class="panel">
+    <div class="header">
+      <div class="flag-box">
+        <img alt="Bandeira da Argentina" src="assets/flags/ar.png"/>
+      </div>
+      <div>
+        <h1>Argentina</h1>
+        <div class="subtitle">Passaporte do Explorador Cultural</div>
+        <div style="margin-top:6px;font-weight:700;color:#1f4e79">Saudação: Hola</div>
+        <div style="margin-top:8px"><span class="sigla">AR</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- COLUNA ESQUERDA -->
+    <div>
+      <div class="panel">
+        <div class="label">Informação Geral</div>
+        <div class="info-grid" style="margin-top:12px">
+          <div class="info-card"><div class="label">Capital</div><div class="value">Buenos Aires</div></div>
+          <div class="info-card"><div class="label">População</div><div class="value">~46 milhões</div></div>
+          <div class="info-card"><div class="label">Moeda</div><div class="value">Peso argentino (ARS)</div></div>
+          <div class="info-card"><div class="label">Língua</div><div class="value">Espanhol</div></div>
+          <div class="info-card"><div class="label">Continente</div><div class="value">América do Sul</div></div>
+          <div class="info-card"><div class="label">Música</div><div class="value">Tango</div></div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:16px">
+        <div class="label">Monumento</div>
+        <div class="value">Obelisco de Buenos Aires</div>
+        <div class="image-card" style="margin-top:12px">
+          <img alt="Obelisco de Buenos Aires" src="assets/images/argentina_monumento.jpg"/>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:16px">
+        <div class="label">Vídeo</div>
+        <div class="value" style="font-size:18px">
+          Explora um vídeo sobre a Argentina
+          <iframe
+            width="100%"
+            height="315"
+            src="https://www.youtube.com/embed/FdSUled1waw"
+            title="Vídeo Argentina"
+            frameborder="0"
+            allowfullscreen
+            style="border-radius:15px; margin-top:10px;">
+          </iframe>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLUNA DIREITA -->
+    <div>
+      <div class="panel">
+        <div class="label">Cultura</div>
+
+        <div class="person-row" style="margin-top:12px">
+          <div class="person-photo">
+            <img alt="Eva Perón" src="assets/images/argentina_personalidade.jpg"/>
+          </div>
+
+          <div class="small-card">
+            <div class="label">Personalidade</div>
+            <div class="value">Eva Perón</div>
+            <div style="margin-top:10px;line-height:1.5">
+              Eva Perón, conhecida como Evita, foi uma figura central da política argentina e uma das mulheres mais influentes da América Latina. Destacou-se pela defesa dos direitos dos trabalhadores e das mulheres, tendo tido um papel decisivo na conquista do voto feminino na Argentina.
+            </div>
+          </div>
+        </div>
+
+        <div class="culture-grid">
+          <div class="small-card food-card">
+            <div class="label">Gastronomia</div>
+            <div style="margin-top:10px; line-height:1.5">
+              Asado, empanadas e dulce de leche.
+            </div>
+          </div>
+
+          <div class="small-card">
+            <div class="label">Tradições</div>
+            <div style="margin-top:10px; line-height:1.5">
+              Tango, cultura do mate e forte identidade ligada ao futebol.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel curiosities" style="margin-top:16px">
+        <div class="label">Curiosidades</div>
+        <ul>
+          <li>A Argentina é um dos maiores produtores de carne bovina do mundo.</li>
+          <li>O tango nasceu em Buenos Aires.</li>
+          <li>O país tem grande diversidade de paisagens, incluindo glaciares, montanhas e pampas.</li>
+          <li>A Argentina possui uma forte tradição cultural ligada ao futebol.</li>
+        </ul>
+      </div>
+
+      <div class="panel quiz" style="margin-top:16px">
+        <div class="label">Quiz</div>
+        <div class="value" style="font-size:18px">Desafio de Conhecimento Intercultural</div>
+
+        <div class="qblock">
+          <div class="label">Pergunta 1</div>
+          <div class="value" style="font-size:18px">Qual é a capital da Argentina?</div>
+          <div class="answers">
+            <label><input type="radio" name="q1" value="0"> Santiago</label>
+            <label><input type="radio" name="q1" value="1"> Buenos Aires</label>
+            <label><input type="radio" name="q1" value="2"> Lima</label>
+            <label><input type="radio" name="q1" value="3"> Montevidéu</label>
+          </div>
+        </div>
+
+        <div class="qblock">
+          <div class="label">Pergunta 2</div>
+          <div class="value" style="font-size:18px">Qual destas tradições está associada à Argentina?</div>
+          <div class="answers">
+            <label><input type="radio" name="q2" value="0"> Flamenco</label>
+            <label><input type="radio" name="q2" value="1"> Tango</label>
+            <label><input type="radio" name="q2" value="2"> Samba</label>
+            <label><input type="radio" name="q2" value="3"> Fado</label>
+          </div>
+        </div>
+
+        <div class="qblock">
+          <div class="label">Pergunta 3</div>
+          <div class="value" style="font-size:18px">Qual destas bebidas é tradicional na Argentina?</div>
+          <div class="answers">
+            <label><input type="radio" name="q3" value="0"> Chá verde</label>
+            <label><input type="radio" name="q3" value="1"> Mate</label>
+            <label><input type="radio" name="q3" value="2"> Café turco</label>
+            <label><input type="radio" name="q3" value="3"> Sake</label>
+          </div>
+        </div>
+
+        <div class="submit"><button class="btn" onclick="checkQuiz()">Verificar respostas</button></div>
+      </div>
+
+      <div style="margin-top:16px">
+        <a class="btn" href="index.html#paises">← Voltar aos países</a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
