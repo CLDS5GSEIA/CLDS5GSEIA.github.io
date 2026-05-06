@@ -144,3 +144,8 @@ Corrigido o comportamento dos botões na Base de ofertas: “Pesquisar / Aplicar
 ## v36 — Correção dos assets nas novas ofertas
 
 Reforçado o carregamento do logótipo CLDS, ícone do Eixo 1 e barra de cofinanciamento. As imagens passam a ser também incorporadas em base64 para evitar falhas de caminho em novas ofertas, previews, PDF e PNG.
+
+
+## v37 — Pesquisa: limpeza de protótipo
+
+Removido o texto “Protótipo...”. O botão “Simular pesquisa” passou a “Pesquisar”. A área de pesquisa fica preparada para ligação posterior a conetores/API/backend autorizado.
