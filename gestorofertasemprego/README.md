@@ -154,3 +154,8 @@ Removido o texto “Protótipo...”. O botão “Simular pesquisa” passou a �
 ## v38 — Firebase Authentication + Firestore
 
 Adicionado ecrã de login com Firebase Authentication. As ofertas passam a ser carregadas e guardadas no Cloud Firestore do projeto `ofertas-clds-seia`. As ações registam o e-mail do técnico autenticado nos campos internos existentes.
+
+
+## v40 — Pesquisa assistida real
+
+O botão “Pesquisar” passa a abrir a fonte selecionada com os filtros indicados, em nova janela/aba. A app deixa de criar resultados simulados. O técnico deve confirmar a oferta na fonte, copiar o texto e importar por copiar/colar para validação.

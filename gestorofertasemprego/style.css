@@ -853,3 +853,29 @@ body.auth-locked .auth-screen{
   width:100%;
   justify-content:center;
 }
+
+
+/* v40 — pesquisa assistida */
+.assisted-search-result{
+  align-items:flex-start;
+  gap:18px;
+}
+
+.assist-actions{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  min-width:220px;
+}
+
+a.link-button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  text-decoration:none;
+}
+
+.muted{
+  color:#6b6680;
+}

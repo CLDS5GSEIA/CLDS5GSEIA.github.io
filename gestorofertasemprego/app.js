@@ -713,7 +713,102 @@ function renderPdf(){
   applyEmbeddedAssetsToPreview($("pdfPreview"));
 }
 
-function printView(id){document.querySelectorAll(".view").forEach(v=>v.classList.remove("printing"));$(id).classList.add("printing");window.print();setTimeout(()=>$(id).classList.remove("printing"),500)}$("btnSimularPesquisa").addEventListener("click",()=>{const fonte=$("fFonte").value,loc=$("fLocalidade").value||"Seia";$("resultadosPesquisa").innerHTML=`<h3>Resultados da pesquisa</h3><p>A pesquisa automática será ligada aos conetores configurados. Até essa ligação estar ativa, pode importar manualmente ofertas copiadas das plataformas autorizadas.</p><div class="found"><div><h4>Pesquisa em ${esc(fonte)}</h4><p>Local: ${esc(loc)} · Estado: pendente de validação humana</p></div><button class="primary" id="btnImportFake">Criar oferta para validação</button></div>`;$("btnImportFake").addEventListener("click",()=>{const o={id:crypto.randomUUID(),titulo:"Oferta importada para validação",entidade:"",localidade:loc,concelho:loc,fonte:fonte,referencia:"",link:"",dataOferta:"",dataConsulta:todayPT(),dataLimite:"",contrato:"",horario:"",remuneracao:"",estado:"pendente",dataInativacao:"",motivoInativacao:"",dataValidacao:"",dataExportPdf:"",dataExportFacebook:"",importadaPor:tecnicoAtual(),validadaPor:"",exportPdfPor:"",exportFacebookPor:"",inativadaPor:"",contacto:"",origemContacto:"",resumoFacebook:"",funcoes:"",requisitos:"",condicoes:"",observacoes:"Resultado simulado. Substituir por dados reais e verificáveis."};offers.unshift(o);currentId=o.id;saveOffers();showView("editor")})});refreshAll();renderFacebook();renderPdf();
+function printView(id){document.querySelectorAll(".view").forEach(v=>v.classList.remove("printing"));$(id).classList.add("printing");window.print();setTimeout(()=>$(id).classList.remove("printing"),500)}
+function buildSearchUrl(fonte, keyword, localidade, dataMin){
+  const qParts = [];
+  if(keyword) qParts.push(keyword);
+  if(localidade) qParts.push(localidade);
+  const q = qParts.join(" ").trim();
+
+  const enc = encodeURIComponent;
+  const fonteNorm = normalizeSearchText(fonte);
+
+  if(fonteNorm.includes("iefp")){
+    // Link público de pesquisa do IEFP. A pesquisa pode exigir ajuste manual dentro da plataforma.
+    return `https://iefponline.iefp.pt/IEFP/pesquisas/search.do?cat=ofertaEmprego`;
+  }
+
+  if(fonteNorm.includes("net-empregos") || fonteNorm.includes("net empregos")){
+    return `https://www.net-empregos.com/pesquisa-empregos.asp?chaves=${enc(q)}&cidade=Guarda`;
+  }
+
+  if(fonteNorm.includes("randstad")){
+    return `https://www.randstad.pt/empregos/q-${enc(keyword || "emprego")}/${localidade ? `?localidade=${enc(localidade)}` : ""}`;
+  }
+
+  if(fonteNorm.includes("manpower")){
+    return `https://www.manpowergroup.pt/empregos/?search=${enc(q)}`;
+  }
+
+  if(fonteNorm.includes("sapo")){
+    return `https://emprego.sapo.pt/pesquisa?keyword=${enc(q)}`;
+  }
+
+  if(fonteNorm.includes("indeed")){
+    return `https://pt.indeed.com/jobs?q=${enc(keyword || "")}&l=${enc(localidade || "Seia")}`;
+  }
+
+  if(fonteNorm.includes("expresso")){
+    return `https://expressoemprego.pt/pesquisa?q=${enc(q)}`;
+  }
+
+  return `https://www.google.com/search?q=${enc(q + " emprego")}`;
+}
+
+function fonteSearchHelp(fonte){
+  const f = normalizeSearchText(fonte);
+  if(f.includes("iefp")){
+    return "No IEFP Online, confirme a localidade/concelho e copie o detalhe completo da oferta. Algumas pesquisas exigem ajuste manual dentro da plataforma.";
+  }
+  if(f.includes("net")){
+    return "No Net-Empregos, abra a oferta pretendida, confirme que está ativa e copie o texto completo da página.";
+  }
+  if(f.includes("randstad") || f.includes("manpower") || f.includes("indeed") || f.includes("sapo")){
+    return "Abra a oferta, confirme a validade e copie a informação relevante para a área de importação.";
+  }
+  return "Confirme sempre a fonte, o link, a validade e os contactos antes de criar a ficha.";
+}
+
+function renderPesquisaAssistida(){
+  const fonte = $("fFonte").value || "IEFP Online";
+  const localidade = $("fLocalidade").value || "Seia";
+  const keyword = $("fKeyword").value || "";
+  const dataMin = $("fData").value || "";
+  const url = buildSearchUrl(fonte, keyword, localidade, dataMin);
+
+  $("resultadosPesquisa").innerHTML = `
+    <h3>Pesquisa assistida</h3>
+    <div class="found assisted-search-result">
+      <div>
+        <h4>${esc(fonte)}</h4>
+        <p><strong>Localidade/concelho:</strong> ${esc(localidade || "Não indicado")}</p>
+        <p><strong>Palavra-chave:</strong> ${esc(keyword || "Sem palavra-chave")}</p>
+        ${dataMin ? `<p><strong>Publicadas a partir de:</strong> ${formatDate(dataMin)}</p>` : ""}
+        <p class="muted">${esc(fonteSearchHelp(fonte))}</p>
+      </div>
+      <div class="assist-actions">
+        <a class="primary link-button" href="${esc(url)}" target="_blank" rel="noopener noreferrer">Abrir pesquisa na fonte</a>
+        <button type="button" class="ghost" id="btnPrepararImportacao">Preparar importação</button>
+      </div>
+    </div>
+    <div class="notice small">
+      <strong>Como usar:</strong> abra a pesquisa, escolha uma oferta ativa, copie o texto completo, cole em “Copiar/colar texto de uma oferta” e carregue em “Organizar texto no nosso layout”.
+    </div>
+  `;
+
+  const prep = $("btnPrepararImportacao");
+  if(prep){
+    prep.addEventListener("click", ()=>{
+      $("pasteFonte").value = fonte;
+      $("rawOfferText").focus();
+      document.querySelector(".paste-import-box")?.scrollIntoView({behavior:"smooth", block:"start"});
+    });
+  }
+}
+
+$("btnSimularPesquisa").addEventListener("click", renderPesquisaAssistida);
+refreshAll();renderFacebook();renderPdf();
+
 
 
 
