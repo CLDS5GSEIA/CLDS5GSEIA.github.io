@@ -943,6 +943,7 @@ function sectionBetween(text, startWords, stopWords){
   return text.slice(start, end).trim();
 }
 function cleanBullets(s){
+  if(!s) return "";
   return normalizeWhitespace(s)
     .replace(/[🔧📍📩]/g,"")
     .split(/\n|•|;|- /)
@@ -1449,31 +1450,52 @@ function parseRawOffer(raw, fonte, link){
     funcoes: cleanBullets(funcoesRaw),
     requisitos: cleanBullets(requisitosRaw),
     condicoes: cleanBullets(condicoesRaw),
+    dataInativacao:"",
+    motivoInativacao:"",
+    dataValidacao:"",
+    dataExportPdf:"",
+    dataExportFacebook:"",
+    importadaPor:tecnicoAtual(),
+    validadaPor:"",
+    exportPdfPor:"",
+    exportFacebookPor:"",
+    inativadaPor:"",
     observacoes: "Oferta organizada automaticamente a partir de texto copiado/colado. Validar manualmente todos os campos antes de publicar."
   };
 }
 
 function organizarTextoOferta(){
-  const rawEl = $("rawOfferText");
-  if(!rawEl){
-    alert("Não encontrei a caixa de texto da oferta. Atualize a página e tente novamente.");
-    return;
+  try{
+    const rawEl = $("rawOfferText");
+    if(!rawEl){
+      alert("Não encontrei a caixa de texto da oferta. Atualize a página e tente novamente.");
+      return;
+    }
+    const raw = rawEl.value.trim();
+    if(!raw){
+      alert("Cole primeiro o texto da oferta.");
+      return;
+    }
+    const fonte = $("pasteFonte") ? $("pasteFonte").value : "";
+    const link = $("pasteLink") ? $("pasteLink").value.trim() : "";
+    const offer = parseRawOffer(raw, fonte, link);
+
+    if(!offer || !offer.id){
+      alert("Não foi possível organizar a oferta. Verifique o texto copiado e tente novamente.");
+      return;
+    }
+
+    offers.unshift(offer);
+    currentId = offer.id;
+    saveOffers();
+    rawEl.value = "";
+    if($("pasteLink")) $("pasteLink").value = "";
+    showView("editor");
+    alert("Texto organizado numa ficha de oferta. Agora valide e complete os campos antes de publicar.");
+  }catch(err){
+    console.error("Erro ao organizar texto da oferta:", err);
+    alert("Ocorreu um erro ao organizar o texto: " + (err && err.message ? err.message : err));
   }
-  const raw = rawEl.value.trim();
-  if(!raw){
-    alert("Cole primeiro o texto da oferta.");
-    return;
-  }
-  const fonte = $("pasteFonte") ? $("pasteFonte").value : "";
-  const link = $("pasteLink") ? $("pasteLink").value.trim() : "";
-  const offer = parseRawOffer(raw, fonte, link);
-  offers.unshift(offer);
-  currentId = offer.id;
-  saveOffers();
-  rawEl.value = "";
-  if($("pasteLink")) $("pasteLink").value = "";
-  showView("editor");
-  alert("Texto organizado numa ficha de oferta. Agora valide e complete os campos antes de publicar.");
 }
 function setupPasteImport(){
   const btn = $("btnOrganizarTextoOferta");
@@ -1494,6 +1516,20 @@ document.addEventListener("DOMContentLoaded", setupPasteImport);
 setupPasteImport();
 
 
+
+
+// v43 — ligação robusta do botão de organização de texto
+document.addEventListener("click", ev=>{
+  if(ev.target && ev.target.id === "btnOrganizarTextoOferta"){
+    ev.preventDefault();
+    organizarTextoOferta();
+  }
+  if(ev.target && ev.target.id === "btnLimparTextoOferta"){
+    ev.preventDefault();
+    if($("rawOfferText")) $("rawOfferText").value = "";
+    if($("pasteLink")) $("pasteLink").value = "";
+  }
+});
 
 // v7: Limpar ofertas - ligação robusta
 function clearAllOffersV7(){

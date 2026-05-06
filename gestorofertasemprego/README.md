@@ -169,3 +169,8 @@ O botão “Abrir pesquisa na fonte” passa a usar o mesmo estilo visual dos re
 ## v42 — BEP / Emprego Público e importação melhorada
 
 Acrescentada a fonte “BEP / Emprego Público” nas listas de pesquisa/importação. A pesquisa assistida abre o portal BEP. A organização automática do texto foi reforçada para formatos de emprego público e para melhor extração de entidade, referência, local, perfil, funções, condições e candidatura.
+
+
+## v43 — Correção botão Organizar texto
+
+Corrigida a ligação do botão “Organizar texto no nosso layout”. Foi adicionada proteção contra erros no parser e ligação robusta por clique, mantendo a fonte BEP / Emprego Público.
