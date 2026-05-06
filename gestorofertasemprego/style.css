@@ -1,0 +1,704 @@
+:root{--purple:#33237d;--purple2:#60409a;--orange:#f2a500;--green:#5fa93d;--blue:#0067bd;--light-purple:#f6f2ff;--light-green:#f4fbef;--light-yellow:#fff7e6;--light-blue:#eef7ff;--line:#ddd3f6;--text:#252333;--muted:#6b6680;--danger:#b42318;--ok:#147a3f;--warning:#a15c00;--shadow:0 12px 34px rgba(35,30,80,.08);--radius:22px}*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--text);background:#f7f6fb}button,input,textarea,select{font:inherit}.app-header{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:18px 28px;background:white;border-bottom:1px solid #eee;position:sticky;top:0;z-index:10}.brand{display:flex;align-items:center;gap:18px}.brand-logo{width:92px;height:auto}.brand h1{font-size:26px;line-height:1.1;margin:0;color:var(--purple)}.brand p{margin:5px 0 0;color:var(--muted)}.header-actions,.actions-row,.quick-actions,.select-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}button{border:0;border-radius:12px;padding:10px 15px;cursor:pointer;font-weight:700}.primary{background:var(--purple);color:#fff}.ghost{background:#eeeaf9;color:var(--purple)}.ok-btn{background:#e7f6ed;color:var(--ok)}.danger-btn{background:#fde8e6;color:var(--danger)}.tabs{display:flex;gap:4px;overflow:auto;background:#fff;padding:8px 20px;border-bottom:1px solid #ece8f8}.tab{background:transparent;color:var(--purple);border-radius:10px;padding:10px 14px;white-space:nowrap}.tab.active{background:#efeafd}main{max-width:1280px;margin:0 auto;padding:24px}.view{display:none}.view.active{display:block}.section-title{margin:0 0 20px}.section-title h2{margin:0;color:var(--purple);font-size:28px}.section-title p{margin:6px 0 0;color:var(--muted)}.cards{display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));gap:16px;margin-bottom:20px}.stat-card{background:#fff;border-radius:18px;padding:22px;box-shadow:var(--shadow);border-top:6px solid var(--purple)}.stat-card span{display:block;font-size:38px;font-weight:900;color:var(--purple)}.stat-card small{color:var(--muted)}.stat-card.ok{border-color:var(--ok)}.stat-card.warning{border-color:var(--warning)}.stat-card.danger{border-color:var(--danger)}.rule-box,.notice,.search-results,.table-wrap,form,.connector,.preview-wrap{background:#fff;border-radius:18px;box-shadow:var(--shadow);padding:20px;margin-top:18px}.rule-box h3{margin-top:0;color:var(--purple)}.rule-box li{margin:8px 0}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(240px,1fr));gap:14px;margin-bottom:14px}label{display:flex;flex-direction:column;gap:6px;font-weight:700;color:var(--purple)}input,textarea,select{border:1px solid #d7d0ee;border-radius:12px;padding:12px;background:#fff;color:var(--text)}textarea{resize:vertical}table{border-collapse:collapse;width:100%;font-size:15px}th,td{text-align:left;padding:12px;border-bottom:1px solid #eee}th{color:var(--purple);background:#faf8ff}.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:800}.badge.ativa{background:#e7f6ed;color:var(--ok)}.badge.pendente{background:#fff4dc;color:var(--warning)}.badge.excluida{background:#fde8e6;color:var(--danger)}.table-actions{display:flex;gap:6px;flex-wrap:wrap}.table-actions button{padding:7px 10px;font-size:13px}.validation-panel{border:1px dashed #c9bee7;border-radius:16px;padding:14px;margin:14px 0;background:#faf8ff}.validation-panel h4{margin:0 0 10px;color:var(--purple)}.validation-panel .fail{color:var(--danger)}.validation-panel .pass{color:var(--ok)}.connector-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}.connector h3{margin-top:0;color:var(--purple)}.connector span{display:inline-block;background:#efeafd;color:var(--purple);padding:6px 9px;border-radius:999px;font-weight:700;font-size:13px}.preview-wrap{overflow:auto;background:#edeaf5}.export-card{margin:auto;background:#fff}.post-frame,.pdf-frame{background:#fff;color:var(--text);position:relative;overflow:hidden;border:1px solid #eee}.post-frame{width:min(860px,100%);aspect-ratio:4/5;padding:34px 42px 28px}.top-line,.pdf-head{display:flex;align-items:flex-start;gap:28px}.top-line img{width:150px}.top-line small,.pdf-head small{font-weight:900;color:var(--purple);font-size:18px}.top-line h2,.pdf-head h2{font-size:58px;line-height:.95;color:var(--purple);margin:10px 0 4px;letter-spacing:-1px}.top-line h3,.pdf-head h3{font-size:30px;color:var(--purple2);margin:0 0 16px}.axis,.pdf-axis{display:flex;align-items:center;gap:20px;border-top:2px solid var(--orange);padding-top:16px;margin:6px 0 22px 210px}.axis img{width:84px;height:84px;object-fit:contain}.axis p,.pdf-axis p{font-size:22px;color:var(--purple);margin:0}.axis strong,.pdf-axis strong{color:var(--orange)}.fb-summary-box{background:var(--light-purple);border:1.5px solid var(--line);border-radius:var(--radius);padding:22px 26px;min-height:250px}.fb-summary-box h4{font-size:28px;margin:0 0 14px;color:var(--purple)}.fb-summary-box li{font-size:24px;line-height:1.28;margin:12px 0}.fb-cta{margin-top:18px;background:var(--light-blue);border:1.5px solid #c8def5;border-radius:var(--radius);padding:20px 24px;color:var(--blue);font-size:22px;line-height:1.25}.fb-meta{margin-top:16px;color:var(--purple);font-weight:700;font-size:15px}.cofin{position:absolute;left:28px;right:28px;bottom:18px;width:calc(100% - 56px);max-height:56px;object-fit:contain}.pdf-frame{width:min(850px,100%);min-height:1200px;padding:34px 44px 78px}.pdf-head img{width:128px}.pdf-head h2{font-size:48px}.pdf-head h3{font-size:27px}.pdf-axis{margin:4px 0 24px 154px}.pdf-axis img{width:68px;height:68px;object-fit:contain}.pdf-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.pdf-frame section{border-radius:18px;border:1.4px solid #dcd3ef;background:#fff;padding:16px 18px;margin-bottom:14px}.pdf-grid section:first-child{background:var(--light-purple)}.pdf-grid section:nth-child(2){background:var(--light-green);border-color:#cfe6c4}.pdf-frame section:nth-of-type(2){background:var(--light-yellow);border-color:#f5dca7}.apply-box{background:var(--light-blue)!important;border-color:#c8def5!important}.pdf-frame h4{margin:0 0 10px;color:var(--purple);font-size:22px;text-transform:uppercase}.pdf-frame dl{margin:0}.pdf-frame dt{font-weight:900;color:var(--purple);margin-top:8px}.pdf-frame dd{margin:2px 0 0 0;overflow-wrap:anywhere}.pdf-frame li{margin:7px 0;line-height:1.32}.pdf-note{color:var(--purple);font-weight:700;border-top:2px dashed #d6cdec;padding-top:12px}.apply-dl a{color:var(--blue);font-weight:800}.notice{border-left:6px solid var(--orange);box-shadow:none;background:#fffdf8}.search-results .found{display:flex;justify-content:space-between;gap:14px;border:1px solid #eee;border-radius:14px;padding:14px;margin:10px 0}.search-results h4{margin:0;color:var(--purple)}.search-results p{margin:5px 0;color:var(--muted)}@media(max-width:860px){.app-header{position:static;flex-direction:column;align-items:flex-start}.cards,.form-grid,.pdf-grid{grid-template-columns:1fr}.post-frame{padding:24px 24px 28px}.top-line h2{font-size:38px}.top-line h3{font-size:22px}.top-line img{width:110px}.axis,.pdf-axis{margin-left:0}}@media print{body{background:#fff}.app-header,.tabs,.section-title,.select-row,.header-actions,.actions-row,.quick-actions,.rule-box,.notice,.connector-grid,.table-wrap,form{display:none!important}main{padding:0;max-width:none}.view{display:none!important}.view.printing{display:block!important}.preview-wrap{box-shadow:none;margin:0;padding:0;background:#fff}.export-card{border:0!important;margin:0 auto;box-shadow:none}}
+
+
+.axis img,.pdf-axis img{
+  object-fit:contain;
+}
+
+.paste-import-box{
+  background:#fff;
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  padding:20px;
+  margin-top:18px;
+  border-left:6px solid var(--purple);
+}
+.paste-import-box h3{margin:0 0 6px;color:var(--purple)}
+.paste-import-box p{margin:0 0 14px;color:var(--muted)}
+.notice.small{font-size:14px;margin-top:12px;padding:12px}
+
+.technician-box{
+  background:#faf8ff!important;
+  border-color:#dcd3ef!important;
+}
+
+.contact-box{
+  background:#fff;
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  padding:20px;
+  margin-top:18px;
+  border-left:6px solid var(--blue);
+}
+.contact-box h3{margin:0 0 8px;color:var(--purple)}
+.contact-box p{margin:0;line-height:1.5}
+.fb-clds-contact{
+  margin-top:12px;
+  padding:12px 14px;
+  border-radius:16px;
+  background:#fff;
+  border:1.4px solid #dcd3ef;
+  color:var(--purple);
+  font-size:15px;
+  line-height:1.28;
+}
+.clds-contact-box{
+  background:#fff!important;
+  border-color:#dcd3ef!important;
+}
+.clds-contact-box p{
+  margin:0;
+  line-height:1.35;
+  overflow-wrap:anywhere;
+}
+
+/* v7: PDF A4 compacto */
+.pdf-frame{
+  width:794px!important;
+  min-height:1123px!important;
+  max-height:1123px!important;
+  padding:24px 30px 64px!important;
+  overflow:hidden!important;
+}
+.pdf-head img{width:98px!important}
+.pdf-head{gap:18px!important}
+.pdf-head h2{font-size:38px!important;margin:6px 0 2px!important}
+.pdf-head h3{font-size:22px!important;margin:0 0 8px!important}
+.pdf-axis{margin:0 0 12px 118px!important;padding-top:10px!important}
+.pdf-axis img{width:48px!important;height:48px!important}
+.pdf-axis p{font-size:16px!important}
+.pdf-grid{gap:10px!important}
+.pdf-frame section{padding:10px 12px!important;margin-bottom:8px!important;border-radius:14px!important}
+.pdf-frame h4{font-size:15px!important;margin:0 0 6px!important}
+.pdf-frame dt{margin-top:4px!important;font-size:12px!important}
+.pdf-frame dd{font-size:12px!important;line-height:1.18!important}
+.pdf-frame li{margin:3px 0!important;font-size:12px!important;line-height:1.18!important}
+.pdf-note{font-size:11px!important;margin:6px 0 0!important;padding-top:6px!important}
+.clds-contact-box p{font-size:11px!important;line-height:1.2!important}
+.technician-box,.clds-contact-box{padding:8px 10px!important}
+.pdf-frame .cofin{bottom:10px!important;max-height:42px!important}
+.fb-clds-contact{margin-top:10px;padding:10px 12px;border-radius:14px;background:#fff;border:1.4px solid #dcd3ef;color:var(--purple);font-size:13px;line-height:1.22}
+.clds-contact-box{background:#fff!important;border-color:#dcd3ef!important}
+
+
+/* v8: correção de sobreposição/corte no PDF e contacto completo no Facebook */
+.post-frame{
+  padding-bottom:120px!important;
+}
+.fb-meta{
+  margin-top:10px!important;
+  font-size:13px!important;
+}
+.fb-clds-contact{
+  margin-top:10px!important;
+  padding:10px 12px!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  border:1.4px solid #dcd3ef!important;
+  color:var(--purple)!important;
+  font-size:13px!important;
+  line-height:1.22!important;
+  overflow-wrap:anywhere!important;
+}
+.post-frame .cofin{
+  bottom:14px!important;
+  max-height:50px!important;
+}
+
+/* PDF: deixar respirar e reservar rodapé para a barra */
+.pdf-frame{
+  width:794px!important;
+  min-height:1123px!important;
+  max-height:none!important;
+  padding:22px 30px 94px!important;
+  overflow:visible!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+.pdf-head img{width:94px!important}
+.pdf-head{gap:16px!important}
+.pdf-head h2{font-size:36px!important;margin:4px 0 2px!important}
+.pdf-head h3{font-size:20px!important;margin:0 0 6px!important}
+.pdf-axis{
+  margin:0 0 10px 110px!important;
+  padding-top:8px!important;
+}
+.pdf-axis img{width:44px!important;height:44px!important}
+.pdf-axis p{font-size:15px!important}
+.pdf-grid{gap:9px!important}
+.pdf-frame section{
+  padding:9px 11px!important;
+  margin-bottom:7px!important;
+  border-radius:13px!important;
+}
+.pdf-frame h4{
+  font-size:14px!important;
+  margin:0 0 5px!important;
+}
+.pdf-frame dt{
+  margin-top:3px!important;
+  font-size:11.5px!important;
+}
+.pdf-frame dd{
+  font-size:11.5px!important;
+  line-height:1.16!important;
+  overflow-wrap:anywhere!important;
+}
+.pdf-frame li{
+  margin:2px 0!important;
+  font-size:11.5px!important;
+  line-height:1.16!important;
+}
+.pdf-note{
+  font-size:10.5px!important;
+  margin:3px 0 0!important;
+  padding-top:5px!important;
+}
+.technician-box,.clds-contact-box{
+  padding:7px 10px!important;
+  margin-bottom:6px!important;
+}
+.clds-contact-box{
+  background:#fff!important;
+  border-color:#dcd3ef!important;
+}
+.clds-contact-box p{
+  margin:0!important;
+  font-size:10.7px!important;
+  line-height:1.16!important;
+  overflow-wrap:anywhere!important;
+}
+.pdf-frame .cofin{
+  position:absolute!important;
+  left:30px!important;
+  right:30px!important;
+  bottom:14px!important;
+  width:calc(100% - 60px)!important;
+  max-height:46px!important;
+  object-fit:contain!important;
+  background:#fff!important;
+  padding-top:5px!important;
+  border-top:1px solid #eee!important;
+}
+
+/* No print, cada folha A4 deve respeitar a barra no rodapé */
+@media print{
+  .pdf-frame{
+    page-break-inside:avoid;
+  }
+}
+
+
+
+/* =========================================================
+   v11 — MÓDULO PDF A4 APROVADO
+   ATENÇÃO: BLOCO BLOQUEADO. Não alterar sem pedido expresso.
+   Modelo-base: ofertas_emprego_CLDS_bloco_01_A4.pdf
+   ========================================================= */
+.pdf-approved{
+  width: 794px !important;
+  min-height: 1123px !important;
+  height: 1123px !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  overflow: hidden !important;
+  padding: 30px 36px 92px !important;
+  border: 1px solid #ded9f0 !important;
+  border-radius: 18px !important;
+  background: #fff !important;
+  color: #171717 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  box-shadow: none !important;
+}
+
+.pdf-approved-head{
+  display: grid !important;
+  grid-template-columns: 168px 1fr !important;
+  gap: 28px !important;
+  align-items: start !important;
+  margin: 0 !important;
+}
+
+.pdf-approved .pdf-logo{
+  width: 145px !important;
+  height: auto !important;
+  object-fit: contain !important;
+  display: block !important;
+  margin-top: 2px !important;
+}
+
+.pdf-title-block h2{
+  margin: 10px 0 4px !important;
+  color: #2b238a !important;
+  font-size: 45px !important;
+  line-height: .95 !important;
+  letter-spacing: .5px !important;
+  font-weight: 900 !important;
+}
+
+.pdf-title-block h3{
+  margin: 0 0 10px !important;
+  color: #4d459b !important;
+  font-size: 25px !important;
+  line-height: 1.08 !important;
+  font-weight: 900 !important;
+}
+
+.pdf-gold-line{
+  height: 2px !important;
+  background: #eca100 !important;
+  width: 100% !important;
+  margin: 9px 0 13px !important;
+}
+
+.pdf-axis-approved{
+  display: flex !important;
+  align-items: center !important;
+  gap: 18px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+.pdf-axis-approved img{
+  width: 56px !important;
+  height: 56px !important;
+  object-fit: contain !important;
+}
+
+.pdf-axis-approved p{
+  margin: 0 !important;
+  color: #2b238a !important;
+  font-size: 17px !important;
+  line-height: 1.22 !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+}
+
+.pdf-axis-approved strong{
+  color: #eca100 !important;
+  font-size: 21px !important;
+}
+
+.pdf-approved-grid{
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 14px 18px !important;
+  margin-top: 34px !important;
+}
+
+.pdf-card{
+  border-radius: 17px !important;
+  border: 1.4px solid #ddd8f0 !important;
+  padding: 18px 22px 16px !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  box-shadow: none !important;
+}
+
+.pdf-card-info{ background: #fbf9ff !important; min-height: 248px !important; }
+.pdf-card-profile{ background: #fbfff7 !important; border-color: #d4e8cc !important; min-height: 248px !important; }
+.pdf-card-cond{ background: #fffdf7 !important; border-color: #f4db98 !important; min-height: 178px !important; }
+.pdf-card-apply{ background: #f8fbff !important; border-color: #c9e2fb !important; min-height: 178px !important; }
+.pdf-card-func{
+  grid-column: 1 / -1 !important;
+  background: #fff !important;
+  min-height: 96px !important;
+  padding-top: 13px !important;
+}
+
+.pdf-card-title{
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  margin-bottom: 15px !important;
+}
+
+.pdf-card h4{
+  margin: 0 !important;
+  color: #2b238a !important;
+  font-size: 19px !important;
+  line-height: 1.1 !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+}
+
+.pdf-card-profile h4{ color: #5ba23c !important; }
+.pdf-card-cond h4{ color: #efa000 !important; }
+.pdf-card-apply h4{ color: #0d6fc7 !important; }
+
+.pdf-icon{
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: white !important;
+  font-size: 24px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  flex: 0 0 38px !important;
+}
+
+.pdf-icon-info{ background: #2b238a !important; }
+.pdf-icon-profile{ background: #5ba23c !important; font-size: 17px !important; }
+.pdf-icon-cond{ background: #efa000 !important; }
+.pdf-icon-apply{ background: #0d6fc7 !important; font-size: 20px !important; }
+
+.pdf-approved dl{
+  display: grid !important;
+  grid-template-columns: 92px 1fr !important;
+  gap: 0 !important;
+  margin: 0 !important;
+  font-size: 12.2px !important;
+  line-height: 1.23 !important;
+}
+
+.pdf-approved dt{
+  color: #2b238a !important;
+  font-weight: 900 !important;
+  margin: 0 !important;
+  padding: 6px 0 5px !important;
+  border-bottom: 1px solid #ece7f8 !important;
+}
+
+.pdf-approved dd{
+  margin: 0 !important;
+  padding: 6px 0 5px !important;
+  border-bottom: 1px solid #ece7f8 !important;
+  overflow-wrap: anywhere !important;
+}
+
+.pdf-approved ul{
+  margin: 0 !important;
+  padding-left: 19px !important;
+  font-size: 13px !important;
+  line-height: 1.28 !important;
+}
+
+.pdf-approved li{
+  margin: 0 0 8px !important;
+  padding-left: 2px !important;
+  line-height: 1.28 !important;
+}
+
+.pdf-card-profile li::marker{ color: #5ba23c !important; }
+.pdf-card-cond li::marker{ color: #efa000 !important; }
+.pdf-card-apply li::marker{ color: #0d6fc7 !important; }
+.pdf-card-func li::marker{ color: #2b238a !important; }
+
+.apply-dl{
+  grid-template-columns: 1fr !important;
+  font-size: 12.4px !important;
+}
+.apply-dl dt{
+  border: 0 !important;
+  color: #222 !important;
+  padding: 4px 0 2px !important;
+}
+.apply-dl dd{
+  border: 0 !important;
+  padding: 0 0 8px !important;
+  color: #0d6fc7 !important;
+  font-weight: 800 !important;
+}
+.apply-dl a{ color: #0d6fc7 !important; }
+
+.pdf-approved-footer{
+  position: absolute !important;
+  left: 36px !important;
+  right: 36px !important;
+  bottom: 21px !important;
+}
+
+.pdf-consulta{
+  color: #2b238a !important;
+  font-weight: 900 !important;
+  font-size: 10.5px !important;
+  margin: 0 0 3px !important;
+}
+
+.pdf-direct-note,
+.pdf-iefp-note{
+  font-size: 9.6px !important;
+  color: #222 !important;
+  margin: 0 0 3px !important;
+  line-height: 1.25 !important;
+}
+
+.pdf-iefp-note{
+  color: #2b238a !important;
+  font-weight: 800 !important;
+}
+
+.pdf-clds-contact{
+  border: 1.3px solid #d5d0ec !important;
+  border-radius: 12px !important;
+  padding: 10px 14px 9px !important;
+  margin: 7px 0 8px !important;
+  color: #222 !important;
+  font-size: 10.5px !important;
+  line-height: 1.25 !important;
+}
+
+.pdf-clds-contact strong{
+  color: #2b238a !important;
+  display: block !important;
+  margin-bottom: 4px !important;
+}
+
+.pdf-contact-lines{
+  display: grid !important;
+  gap: 3px !important;
+}
+
+.pdf-approved .cofin{
+  display: block !important;
+  width: 100% !important;
+  height: 34px !important;
+  object-fit: contain !important;
+  position: static !important;
+  max-height: none !important;
+}
+
+#pdfPreview.a4-page,
+#pdfPreview{
+  background: transparent !important;
+  width: auto !important;
+  min-height: auto !important;
+  padding: 0 !important;
+}
+
+/* Impressão/PDF: manter exatamente uma folha A4 */
+@media print{
+  @page{ size: A4 portrait; margin: 0; }
+  .pdf-approved{
+    width: 210mm !important;
+    height: 297mm !important;
+    min-height: 297mm !important;
+    border-radius: 0 !important;
+    border: 0 !important;
+    page-break-after: always !important;
+  }
+}
+
+
+/* =========================================================
+   v12 — AFINAÇÃO DO PDF A4
+   Correções: evitar sobreposição, uniformizar tipografia,
+   reduzir excesso de texto e reservar espaço para rodapé.
+   ========================================================= */
+.pdf-approved,
+.pdf-approved *{
+  font-family: "Segoe UI", Arial, Helvetica, sans-serif !important;
+  letter-spacing: 0 !important;
+}
+
+.pdf-approved{
+  padding: 26px 34px 170px !important;
+}
+
+.pdf-approved-head{
+  grid-template-columns: 150px 1fr !important;
+  gap: 22px !important;
+}
+
+.pdf-approved .pdf-logo{
+  width: 128px !important;
+}
+
+.pdf-title-block h2{
+  font-size: 40px !important;
+  line-height: 0.98 !important;
+  margin: 8px 0 4px !important;
+}
+
+.pdf-title-block h3{
+  font-size: 22px !important;
+  line-height: 1.08 !important;
+  margin: 0 0 8px !important;
+}
+
+.pdf-gold-line{ margin: 8px 0 10px !important; }
+
+.pdf-axis-approved img{ width: 48px !important; height: 48px !important; }
+.pdf-axis-approved p{ font-size: 15px !important; }
+.pdf-axis-approved strong{ font-size: 18px !important; }
+
+.pdf-approved-grid{
+  gap: 12px 16px !important;
+  margin-top: 22px !important;
+  padding-bottom: 0 !important;
+}
+
+.pdf-card{ padding: 14px 18px 12px !important; }
+.pdf-card-info, .pdf-card-profile{ min-height: 220px !important; }
+.pdf-card-cond, .pdf-card-apply{ min-height: 152px !important; }
+.pdf-card-func{ min-height: 88px !important; max-height: 110px !important; overflow: hidden !important; }
+
+.pdf-card-title{ gap: 11px !important; margin-bottom: 10px !important; }
+.pdf-card h4{ font-size: 16px !important; }
+.pdf-icon{ width: 32px !important; height: 32px !important; font-size: 18px !important; flex-basis: 32px !important; }
+.pdf-icon-profile{ font-size: 14px !important; }
+.pdf-icon-apply{ font-size: 16px !important; }
+
+.pdf-approved dl{ grid-template-columns: 86px 1fr !important; font-size: 11px !important; line-height: 1.16 !important; }
+.pdf-approved dt, .pdf-approved dd{ padding: 4px 0 !important; }
+.pdf-approved ul{ padding-left: 18px !important; font-size: 11.2px !important; line-height: 1.18 !important; }
+.pdf-approved li{ margin: 0 0 5px !important; }
+
+.apply-dl{ font-size: 11px !important; }
+.apply-dl dt{ padding: 2px 0 1px !important; }
+.apply-dl dd{ padding: 0 0 6px !important; font-size: 11px !important; line-height: 1.16 !important; }
+
+.pdf-approved-footer{
+  left: 34px !important;
+  right: 34px !important;
+  bottom: 18px !important;
+  background: #fff !important;
+}
+
+.pdf-consulta{ font-size: 9.6px !important; margin-bottom: 2px !important; }
+.pdf-direct-note,
+.pdf-iefp-note{ font-size: 8.8px !important; margin: 0 0 2px !important; line-height: 1.16 !important; }
+
+.pdf-clds-contact{
+  padding: 8px 12px !important;
+  margin: 5px 0 6px !important;
+  font-size: 9.4px !important;
+  line-height: 1.14 !important;
+}
+
+.pdf-clds-contact strong{ margin-bottom: 3px !important; font-size: 9.8px !important; }
+.pdf-contact-lines{ gap: 2px !important; }
+.pdf-approved .cofin{ height: 30px !important; }
+
+#pdfPreview .pdf-approved{
+  transform-origin: top center !important;
+}
+
+@media print{
+  .pdf-approved,
+  .pdf-approved *{
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+/* v22 — MÓDULO FACEBOOK/PNG */
+.fb-post-approved,.fb-post-approved *{box-sizing:border-box!important;font-family:"Segoe UI",Arial,Helvetica,sans-serif!important}
+.fb-post-approved{width:1080px!important;height:1350px!important;position:relative!important;background:#fff!important;color:#1f1f1f!important;overflow:hidden!important;padding:48px 58px 220px!important;border:1px solid #ded9f0!important;border-radius:26px!important}
+.fb-approved-head{display:grid!important;grid-template-columns:180px 1fr!important;gap:34px!important;align-items:start!important}
+.fb-logo{width:165px!important;height:auto!important;object-fit:contain!important}
+.fb-title-block h2{margin:8px 0 8px!important;color:#2b238a!important;font-size:58px!important;line-height:.95!important;font-weight:900!important}
+.fb-title-block h3{margin:0 0 12px!important;color:#4d459b!important;font-size:30px!important;line-height:1.08!important;font-weight:900!important}
+.fb-gold-line{height:4px!important;background:#eca100!important;width:100%!important;margin:16px 0 20px!important}
+.fb-axis-approved{display:flex!important;align-items:center!important;gap:24px!important}
+.fb-axis-approved img{width:82px!important;height:82px!important;object-fit:contain!important}
+.fb-axis-approved p{margin:0!important;color:#2b238a!important;font-size:22px!important;line-height:1.16!important;font-weight:900!important;text-transform:uppercase!important}
+.fb-axis-approved strong{color:#eca100!important;font-size:28px!important}
+.fb-offer-box{margin-top:40px!important;background:#fbf9ff!important;border:2px solid #ddd8f0!important;border-radius:30px!important;padding:30px 36px!important;min-height:440px!important}
+.fb-offer-box h4{margin:0 0 20px!important;color:#2b238a!important;font-size:34px!important;line-height:1!important;font-weight:900!important;text-transform:uppercase!important}
+.fb-offer-box ul{margin:0!important;padding-left:28px!important;font-size:25px!important;line-height:1.18!important}
+.fb-offer-box li{margin:0 0 12px!important}.fb-offer-box li::marker{color:#2b238a!important}
+.fb-service-cta{margin-top:18px!important;background:#f8fbff!important;border:2px solid #c9e2fb!important;border-radius:26px!important;padding:20px 26px!important;color:#0d6fc7!important}
+.fb-service-cta strong{display:block!important;font-size:30px!important;line-height:1.08!important;margin-bottom:6px!important}.fb-service-cta span{font-size:24px!important;line-height:1.18!important}
+.fb-clds-contact-fixed{position:absolute!important;left:58px!important;right:58px!important;bottom:112px!important;border:2px solid #d5d0ec!important;border-radius:24px!important;padding:14px 24px!important;color:#2b238a!important;font-size:18px!important;line-height:1.14!important;background:#fff!important}
+.fb-clds-contact-fixed strong{display:block!important;font-size:20px!important;margin-bottom:3px!important}.fb-clds-contact-fixed span{display:block!important}
+.fb-post-approved .fb-meta{position:absolute!important;left:58px!important;right:58px!important;bottom:80px!important;margin:0!important;color:#2b238a!important;font-weight:800!important;font-size:13px!important;line-height:1.12!important}
+.fb-post-approved .cofin{position:absolute!important;left:58px!important;right:58px!important;bottom:14px!important;width:calc(100% - 116px)!important;max-height:72px!important;object-fit:contain!important}
+#facebookPreview.fb-card,#facebookPreview{background:transparent!important;width:auto!important;min-height:auto!important;padding:0!important}
+
+
+/* =========================================================
+   v25 — Correção final rodapé Facebook
+   ========================================================= */
+.fb-post-approved{
+  padding-bottom: 260px !important;
+}
+
+.fb-offer-box{
+  max-height: 560px !important;
+  overflow: hidden !important;
+}
+
+.fb-service-cta{
+  margin-top: 18px !important;
+}
+
+.fb-clds-contact-fixed{
+  position: absolute !important;
+  left: 58px !important;
+  right: 58px !important;
+  bottom: 104px !important;
+  height: 78px !important;
+  overflow: hidden !important;
+  padding: 12px 22px !important;
+  background: #fff !important;
+  z-index: 2 !important;
+}
+
+.fb-clds-contact-fixed strong{
+  font-size: 18px !important;
+  line-height: 1.05 !important;
+  margin-bottom: 2px !important;
+}
+
+.fb-clds-contact-fixed span{
+  font-size: 15.5px !important;
+  line-height: 1.08 !important;
+}
+
+.fb-post-approved .fb-meta{
+  position: absolute !important;
+  left: 58px !important;
+  right: 58px !important;
+  bottom: 84px !important;
+  font-size: 12px !important;
+  line-height: 1.05 !important;
+  margin: 0 !important;
+  z-index: 2 !important;
+}
+
+.fb-post-approved .cofin{
+  position: absolute !important;
+  left: 58px !important;
+  right: 58px !important;
+  bottom: 18px !important;
+  width: calc(100% - 116px) !important;
+  max-height: 72px !important;
+  height: 58px !important;
+  object-fit: contain !important;
+  background: #fff !important;
+  z-index: 1 !important;
+}
+
+.badge.inativa{background:#eef0f4;color:#4b5563}.table-wrap small{color:#6b6680;font-size:12px}
+
+/* v32 — histórico/filtros */
+.history-filters{margin-bottom:18px}
+.compact-grid{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.table-wrap table{min-width:1100px}
+.table-wrap small{line-height:1.25}
+.badge.inativa{background:#eef0f4;color:#4b5563}
+
+
+/* v36 — reforço de assets em novas ofertas */
+.pdf-approved .pdf-logo,
+.fb-post-approved .fb-logo,
+.pdf-approved .cofin,
+.fb-post-approved .cofin,
+.pdf-axis-approved img,
+.fb-axis-approved img{
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+}
+
+.pdf-approved .cofin,
+.fb-post-approved .cofin{
+  object-fit:contain !important;
+  background:#fff !important;
+}
