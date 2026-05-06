@@ -81,12 +81,18 @@ async function registerTechnicianLogin(user){
 
 function showLoggedIn(user){
   document.body.classList.remove("auth-locked");
+  document.body.classList.add("app-unlocked");
   const u = $("userEmailDisplay");
   if(u) u.textContent = user?.email || "Sessão iniciada";
+  const err = $("loginError");
+  if(err) err.textContent = "";
 }
 
 function showLoggedOut(){
   document.body.classList.add("auth-locked");
+  document.body.classList.remove("app-unlocked");
+  const u = $("userEmailDisplay");
+  if(u) u.textContent = "Sessão";
   const err = $("loginError");
   if(err) err.textContent = "";
 }
@@ -121,6 +127,7 @@ function initFirebaseApp(){
       const err = $("loginError");
       if(err) err.textContent = "A entrar...";
       try{
+        await fbAuth.setPersistence(firebase.auth.Auth.Persistence.NONE);
         await fbAuth.signInWithEmailAndPassword(email, pass);
         if(err) err.textContent = "";
       }catch(e){

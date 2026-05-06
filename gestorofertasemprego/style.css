@@ -792,3 +792,64 @@ body:not(.auth-locked) .auth-screen{
   text-overflow:ellipsis;
   white-space:nowrap;
 }
+
+
+/* v39 — login gate robusto */
+body.auth-locked{
+  overflow:hidden !important;
+}
+
+#appShell{
+  display:none;
+}
+
+body.app-unlocked #appShell{
+  display:block;
+}
+
+body.app-unlocked .auth-screen{
+  display:none !important;
+}
+
+body.auth-locked .auth-screen{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:flex !important;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  overflow:auto;
+  background:linear-gradient(135deg,#ffffff 0%,#f7f6fb 100%);
+}
+
+.auth-card{
+  width:min(460px, 100%);
+  max-width:460px;
+  padding:28px;
+}
+
+.auth-logo{
+  width:92px !important;
+  max-width:92px !important;
+  margin:0 auto 16px !important;
+}
+
+.auth-card h1{
+  font-size:24px;
+  text-align:center;
+}
+
+.auth-card p{
+  text-align:center;
+  font-size:15px;
+}
+
+.auth-form label{
+  display:block;
+}
+
+.auth-form button.primary{
+  width:100%;
+  justify-content:center;
+}

@@ -27,6 +27,7 @@
   </div>
 </section>
 
+<div id="appShell">
 <header class="app-header"><div class="brand"><img src="assets/logo_clds.png" class="brand-logo"><div><h1>Gestor de Ofertas de Emprego — CLDS 5G Seia</h1><p>Gestão, validação e exportação de ofertas de emprego</p></div></div><div class="header-actions"><span class="user-pill" id="userEmailDisplay">Sessão</span><button type="button" class="ghost" id="btnLogout">Sair</button><button type="button" class="ghost" id="btnLimparOfertas">Limpar ofertas</button>
       <button class="primary" id="btnNovaOferta">+ Nova oferta</button></div></header>
 <nav class="tabs"><button class="tab active" data-view="dashboard">Painel</button><button class="tab" data-view="pesquisa">Pesquisa / Importação</button><button class="tab" data-view="ofertas">Ofertas</button><button class="tab" data-view="editor">Ficha da oferta</button><button class="tab" data-view="facebook">Publicação Facebook</button><button class="tab" data-view="pdf">PDF A4</button><button class="tab" data-view="fontes">Fontes</button></nav>
@@ -151,6 +152,7 @@
 <section id="pdf" class="view"><div class="section-title"><h2>Gerador de PDF A4</h2><p>Versão detalhada para atendimento presencial, envio por e-mail ou WhatsApp. Preferencialmente 1 página A4; máximo 2 páginas. A versão final fará a divisão automática se não couber numa página.</p></div><div class="select-row"><label>Oferta<select id="selectPdf"></select></label><button class="primary" type="button" id="btnRenderPdf">Pré-visualizar</button><button class="ghost" type="button" id="btnPrintPdf">Imprimir / Guardar em PDF</button></div><div class="preview-wrap"><article id="pdfPreview" class="a4-page export-card"></article></div></section>
 <section id="fontes" class="view"><div class="section-title"><h2>Fontes e conetores</h2><p>Definição das plataformas a integrar na fase seguinte.</p></div><div class="connector-grid"><article class="connector"><h3>IEFP Online</h3><p>Pesquisa por concelho, ID da oferta, estado e candidatura via plataforma.</p><span>Pendente de conetor</span></article><article class="connector"><h3>Net-Empregos</h3><p>Pesquisa por localidade, referência, entidade e eventual contacto visível/autenticado.</p><span>Pendente de conetor</span></article><article class="connector"><h3>Randstad</h3><p>Pesquisa por localidade, referência, data limite e candidatura direta.</p><span>Pendente de conetor</span></article><article class="connector"><h3>SAPO Emprego</h3><p>Usar apenas quando a oferta estiver ativa; excluir páginas marcadas como indisponíveis.</p><span>Pendente de conetor</span></article><article class="connector"><h3>Adicionar manualmente</h3><p>Para contactos obtidos legalmente por conta institucional ou informação entregue pela entidade.</p><span>Disponível</span></article></div></section>
 </main>
+</div>
 <template id="fbTemplate">
   <div class="fb-post-approved">
     <header class="fb-approved-head">
