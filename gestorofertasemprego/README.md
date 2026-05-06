@@ -149,3 +149,8 @@ Reforçado o carregamento do logótipo CLDS, ícone do Eixo 1 e barra de cofinan
 ## v37 — Pesquisa: limpeza de protótipo
 
 Removido o texto “Protótipo...”. O botão “Simular pesquisa” passou a “Pesquisar”. A área de pesquisa fica preparada para ligação posterior a conetores/API/backend autorizado.
+
+
+## v38 — Firebase Authentication + Firestore
+
+Adicionado ecrã de login com Firebase Authentication. As ofertas passam a ser carregadas e guardadas no Cloud Firestore do projeto `ofertas-clds-seia`. As ações registam o e-mail do técnico autenticado nos campos internos existentes.

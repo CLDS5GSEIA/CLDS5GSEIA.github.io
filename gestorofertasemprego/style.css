@@ -702,3 +702,93 @@
   object-fit:contain !important;
   background:#fff !important;
 }
+
+
+/* v38 — Login Firebase */
+.auth-locked .app-header,
+.auth-locked .tabs,
+.auth-locked main{
+  display:none !important;
+}
+
+.auth-screen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:32px;
+  background:linear-gradient(135deg,#ffffff 0%,#f7f6fb 100%);
+}
+
+body:not(.auth-locked) .auth-screen{
+  display:none;
+}
+
+.auth-card{
+  width:min(520px,100%);
+  background:#fff;
+  border:1px solid #ded9f0;
+  border-radius:28px;
+  padding:34px;
+  box-shadow:0 20px 60px rgba(43,35,138,.10);
+  text-align:left;
+}
+
+.auth-logo{
+  width:130px;
+  height:auto;
+  display:block;
+  margin-bottom:18px;
+}
+
+.auth-card h1{
+  color:#2b238a;
+  margin:0 0 8px;
+  font-size:32px;
+}
+
+.auth-card p{
+  color:#5e5a72;
+  line-height:1.45;
+}
+
+.auth-form{
+  display:grid;
+  gap:16px;
+  margin-top:22px;
+}
+
+.auth-form label{
+  font-weight:800;
+  color:#2b238a;
+}
+
+.auth-form input{
+  width:100%;
+  margin-top:7px;
+  padding:12px 14px;
+  border:1px solid #d9d3ee;
+  border-radius:12px;
+  font-size:16px;
+}
+
+.auth-error{
+  color:#a11919;
+  font-weight:800;
+  min-height:20px;
+  margin:0;
+}
+
+.user-pill{
+  display:inline-flex;
+  align-items:center;
+  max-width:260px;
+  padding:10px 12px;
+  border-radius:999px;
+  background:#f1effb;
+  color:#2b238a;
+  font-weight:900;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
