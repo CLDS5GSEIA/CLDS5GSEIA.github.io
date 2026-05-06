@@ -1,234 +1,164 @@
-<!DOCTYPE html>
-<html lang="pt">
+<!doctype html>
+<html lang="pt-PT">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Passaporte do Explorador Cultural</title>
-
-<style>
-body {margin:0;font-family:Arial;background:#f4f7fb;}
-.hero {
-  background:linear-gradient(90deg,#1f4e79,#0b2545);
-  color:white;
-  padding:40px 20px;
-}
-.hero h1 {font-size:40px;margin:0;}
-.hero p {font-size:18px;margin-top:10px;}
-.btn {
-    display:inline-block;
-    margin-top:15px;
-    background:#f6a623;
-    padding:12px 18px;
-    border-radius:10px;
-    color:black;
-    font-weight:bold;
-    text-decoration:none;
-    transition: transform 0.2s ease;
-    cursor: pointer;
-}
-
-.btn:hover {
-    transform: scale(1.05);
-}
-.logos {
-  background:white;
-  padding:15px;
-  display:flex;
-  justify-content:center;
-  gap:20px;
-  flex-wrap:wrap;
-}
-.logos img {height:40px;}
-.grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:20px;
-  padding:20px;
-}
-.card {
-  background: white;
-  border-radius: 15px;
-  padding: 15px;
-  text-align: center;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-  transition: transform 0.2s ease;
-}
-  .card:hover {
-  transform: translateY(-5px);
-}
-.country {font-weight:bold;margin:10px 0;}
-.flag {
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  margin-bottom: 10px;
-}
-
-.flag img {
-  max-width: 100%;
-  max-height: 90px;
-  object-fit: contain;
-}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CLDS 5G [Des]Envolver Seia</title>
+  <style>
+    :root{
+      --purple:#2b238a;
+      --purple2:#4d459b;
+      --gold:#eca100;
+      --bg:#f7f6fb;
+      --line:#ded9f0;
+      --text:#252333;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:"Segoe UI", Arial, sans-serif;
+      background:linear-gradient(135deg,#ffffff 0%,var(--bg) 100%);
+      color:var(--text);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+    }
+    main{
+      width:min(980px,100%);
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:28px;
+      padding:42px;
+      box-shadow:0 20px 60px rgba(43,35,138,.10);
+    }
+    header{
+      display:flex;
+      gap:22px;
+      align-items:center;
+      border-bottom:3px solid var(--gold);
+      padding-bottom:26px;
+      margin-bottom:30px;
+    }
+    header img{
+      width:132px;
+      height:auto;
+      object-fit:contain;
+    }
+    h1{
+      margin:0;
+      color:var(--purple);
+      font-size:42px;
+      line-height:1.05;
+      font-weight:900;
+    }
+    p.lead{
+      margin:10px 0 0;
+      color:var(--purple2);
+      font-size:20px;
+      line-height:1.35;
+      font-weight:600;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:18px;
+      margin-top:28px;
+    }
+    a.card{
+      text-decoration:none;
+      color:inherit;
+      border:1.5px solid var(--line);
+      border-radius:22px;
+      padding:24px;
+      background:#fbf9ff;
+      min-height:180px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      transition:transform .15s ease, box-shadow .15s ease;
+    }
+    a.card:hover{
+      transform:translateY(-3px);
+      box-shadow:0 12px 34px rgba(43,35,138,.12);
+    }
+    .tag{
+      display:inline-block;
+      align-self:flex-start;
+      background:var(--gold);
+      color:#fff;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:900;
+      padding:6px 10px;
+      text-transform:uppercase;
+      letter-spacing:.3px;
+    }
+    h2{
+      margin:18px 0 8px;
+      color:var(--purple);
+      font-size:25px;
+      line-height:1.1;
+    }
+    .card p{
+      margin:0;
+      color:#555;
+      line-height:1.35;
+    }
+    footer{
+      margin-top:28px;
+      color:#6b6680;
+      font-size:14px;
+      text-align:center;
+    }
+    @media(max-width:800px){
+      main{padding:26px}
+      header{flex-direction:column;align-items:flex-start}
+      h1{font-size:32px}
+      .grid{grid-template-columns:1fr}
+    }
+  </style>
 </head>
-
 <body>
+  <main>
+    <header>
+      <img src="gestorofertasemprego/assets/logo_clds.png" alt="CLDS 5G [Des]Envolver Seia">
+      <div>
+        <h1>CLDS 5G [Des]Envolver Seia</h1>
+        <p class="lead">Projetos digitais de apoio à comunidade, interculturalidade e empregabilidade.</p>
+      </div>
+    </header>
 
-<img src="assets/images/banner.png" style="width:100%; height:auto; display:block;">
+    <section class="grid" aria-label="Áreas disponíveis">
+      <a class="card" href="passaporteintercultural/">
+        <span class="tag">Interculturalidade</span>
+        <div>
+          <h2>Passaporte Intercultural</h2>
+          <p>Exploração cultural por países, curiosidades, património e atividades educativas.</p>
+        </div>
+      </a>
 
+      <a class="card" href="jogo/">
+        <span class="tag">Quiz</span>
+        <div>
+          <h2>Jogo Intercultural</h2>
+          <p>Desafio de conhecimento intercultural em formato quiz.</p>
+        </div>
+      </a>
 
-<h2 style="padding-left:20px;">Escolhe um País</h2>
+      <a class="card" href="gestorofertasemprego/">
+        <span class="tag">Emprego</span>
+        <div>
+          <h2>Gestor de Ofertas de Emprego</h2>
+          <p>Ferramenta interna para organizar, validar e divulgar oportunidades de emprego.</p>
+        </div>
+      </a>
+    </section>
 
-<div class="grid" id="paises">
-
-  <div class="card">
-  <div class="flag">
-    <img src="assets/flags/de.png">
-  </div>
-  <div class="country">Alemanha</div>
-  <a href="alemanha.html" class="btn">Explorar</a>
-</div>
- <div class="card">
-  <div class="flag">
-    <img src="assets/flags/ao.png">
-  </div>
-  <div class="country">Angola</div>
-  <a href="angola.html" class="btn">Explorar</a>
-</div>
-
- <div class="card">
-  <div class="flag">
-    <img src="assets/flags/ar.png">
-  </div>
-  <div class="country">Argentina</div>
-  <a href="argentina.html" class="btn">Explorar</a>
-</div>
-  
-  <div class="card">
-  <div class="flag">
-    <img src="assets/flags/br.png">
-  </div>
-  <div class="country">Brasil</div>
-  <a href="brasil.html" class="btn">Explorar</a>
-</div>
-
- <div class="card">
-  <div class="flag">
-    <img src="assets/flags/cv.png">
-  </div>
-  <div class="country">Cabo Verde</div>
-  <a href="caboverde.html" class="btn">Explorar</a>
-</div>
-
-  <div class="card">
-  <div class="flag">
-    <img src="assets/flags/cn.png">
-  </div>
-  <div class="country">China</div>
-  <a href="china.html" class="btn">Explorar</a>
-</div>
-
-  <div class="card">
-  <div class="flag">
-    <img src="assets/flags/co.png">
-  </div>
-  <div class="country">Colômbia</div>
-  <a href="colombia.html" class="btn">Explorar</a>
-</div>
-
-  <div class="card">
-  <div class="flag">
-    <img src="assets/flags/us.png">
-  </div>
-  <div class="country">Estados Unidos</div>
-  <a href="eua.html" class="btn">Explorar</a>
-</div>
-
-  <div class="card">
-  <div class="flag">
-    <img src="assets/flags/fr.png">
-  </div>
-  <div class="country">França</div>
-  <a href="franca.html" class="btn">Explorar</a>
-</div>
-
-  <div class="card">
-  <div class="flag">
-    <img src="assets/flags/gw.png">
-  </div>
-  <div class="country">Guiné-Bissau</div>
-  <a href="guinebissau.html" class="btn">Explorar</a>
-</div>
-
- <div class="card">
-  <div class="flag">
-    <img src="assets/flags/in.png">
-  </div>
-  <div class="country">Índia</div>
-  <a href="india.html" class="btn">Explorar</a>
-</div>
-
-  <div class="card">
-  <div class="flag">
-    <img src="assets/flags/gb.png">
-  </div>
-  <div class="country">Inglaterra</div>
-  <a href="inglaterra.html" class="btn">Explorar</a>
-</div>
-
-  <div class="card">
-  <div class="flag">
-    <img src="assets/flags/li.png">
-  </div>
-  <div class="country">Liechtenstein</div>
-  <a href="liechtenstein.html" class="btn">Explorar</a>
-</div>
-
-  <div class="card">
-  <div class="flag">
-    <img src="assets/flags/mz.png">
-  </div>
-  <div class="country">Moçambique</div>
-  <a href="mocambique.html" class="btn">Explorar</a>
-</div>
-
-  <div class="card">
-  <div class="flag">
-    <img src="assets/flags/pt.png">
-  </div>
-  <div class="country">Portugal</div>
-  <a href="portugal.html" class="btn">Explorar</a>
-</div>
-
-  <div class="card">
-  <div class="flag">
-    <img src="assets/flags/st.png">
-  </div>
-  <div class="country">São Tomé e Príncipe</div>
-  <a href="saotome.html" class="btn">Explorar</a>
-</div>
-
- <div class="card">
-  <div class="flag">
-    <img src="assets/flags/sy.png">
-  </div>
-  <div class="country">Síria</div>
-  <a href="siria.html" class="btn">Explorar</a>
-</div>
-
-  <div class="card">
-  <div class="flag">
-    <img src="assets/flags/ua.png">
-  </div>
-  <div class="country">Ucrânia</div>
-  <a href="ucrania.html" class="btn">Explorar</a>
-</div>
-
-</div>
-
-</div>
-
+    <footer>
+      CLDS 5G [Des]Envolver Seia · Eixo 1 — Emprego, Formação e Qualificação
+    </footer>
+  </main>
 </body>
 </html>
