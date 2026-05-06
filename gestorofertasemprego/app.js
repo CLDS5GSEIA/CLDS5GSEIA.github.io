@@ -1,4 +1,158 @@
 
+const firebaseConfig = {
+  apiKey: "AIzaSyA2Yp4hogk5Z7ga6JLfe6s7sUTPi3i5C84",
+  authDomain: "ofertas-clds-seia.firebaseapp.com",
+  projectId: "ofertas-clds-seia",
+  storageBucket: "ofertas-clds-seia.firebasestorage.app",
+  messagingSenderId: "237778187538",
+  appId: "1:237778187538:web:314bfffb41fd2616b4afcb"
+};
+
+let fbApp = null;
+let fbAuth = null;
+let fbDb = null;
+let currentUser = null;
+let firebaseOnline = false;
+let suppressRemoteSync = false;
+
+function tecnicoAtual(){
+  return currentUser?.email || "Técnico não identificado";
+}
+
+function serverTimestampSafe(){
+  try{
+    return firebase.firestore.FieldValue.serverTimestamp();
+  }catch{
+    return new Date().toISOString();
+  }
+}
+
+async function syncOffersToFirestore(){
+  if(!firebaseOnline || !currentUser || !fbDb || suppressRemoteSync) return;
+  const existingSnap = await fbDb.collection("ofertas").get();
+  const currentIds = new Set(offers.map(o=>o.id));
+  const batch = fbDb.batch();
+
+  existingSnap.forEach(doc=>{
+    if(!currentIds.has(doc.id)){
+      batch.delete(doc.ref);
+    }
+  });
+
+  offers.forEach(o=>{
+    const ref = fbDb.collection("ofertas").doc(o.id);
+    batch.set(ref, {
+      ...o,
+      updatedAt: serverTimestampSafe(),
+      updatedBy: tecnicoAtual()
+    }, {merge:true});
+  });
+
+  await batch.commit();
+}
+
+async function loadOffersFromFirestore(){
+  if(!firebaseOnline || !currentUser || !fbDb) return;
+  suppressRemoteSync = true;
+  try{
+    const snap = await fbDb.collection("ofertas").get();
+    offers = snap.docs.map(doc=>({id:doc.id, ...doc.data()}));
+    offers.sort((a,b)=>String(b.dataConsulta||"").localeCompare(String(a.dataConsulta||"")));
+    currentId = offers[0]?.id || null;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(offers));
+    refreshAll();
+  }catch(err){
+    console.error(err);
+    alert("Não foi possível carregar ofertas da base de dados. Verifique a ligação e as regras do Firebase.");
+  }finally{
+    suppressRemoteSync = false;
+  }
+}
+
+async function registerTechnicianLogin(user){
+  if(!fbDb || !user) return;
+  await fbDb.collection("tecnicos").doc(user.uid).set({
+    uid:user.uid,
+    email:user.email || "",
+    lastLoginAt: serverTimestampSafe(),
+    updatedAt: serverTimestampSafe()
+  }, {merge:true});
+}
+
+function showLoggedIn(user){
+  document.body.classList.remove("auth-locked");
+  const u = $("userEmailDisplay");
+  if(u) u.textContent = user?.email || "Sessão iniciada";
+}
+
+function showLoggedOut(){
+  document.body.classList.add("auth-locked");
+  const err = $("loginError");
+  if(err) err.textContent = "";
+}
+
+function firebaseErrorMessage(err){
+  const code = err?.code || "";
+  if(code.includes("wrong-password") || code.includes("invalid-credential")) return "E-mail ou palavra-passe inválidos.";
+  if(code.includes("user-not-found")) return "Utilizador não encontrado.";
+  if(code.includes("too-many-requests")) return "Demasiadas tentativas. Aguarde um pouco e tente novamente.";
+  return err?.message || "Não foi possível iniciar sessão.";
+}
+
+let firebaseInitStarted=false;
+function initFirebaseApp(){
+  if(firebaseInitStarted) return;
+  firebaseInitStarted=true;
+  if(!window.firebase){
+    console.error("Firebase SDK não carregou.");
+    return;
+  }
+  fbApp = firebase.initializeApp(firebaseConfig);
+  fbAuth = firebase.auth();
+  fbDb = firebase.firestore();
+  firebaseOnline = true;
+
+  const loginForm = $("loginForm");
+  if(loginForm){
+    loginForm.addEventListener("submit", async ev=>{
+      ev.preventDefault();
+      const email = $("loginEmail").value.trim();
+      const pass = $("loginPassword").value;
+      const err = $("loginError");
+      if(err) err.textContent = "A entrar...";
+      try{
+        await fbAuth.signInWithEmailAndPassword(email, pass);
+        if(err) err.textContent = "";
+      }catch(e){
+        if(err) err.textContent = firebaseErrorMessage(e);
+      }
+    });
+  }
+
+  const logout = $("btnLogout");
+  if(logout){
+    logout.addEventListener("click", async ()=>{
+      await fbAuth.signOut();
+    });
+  }
+
+  fbAuth.onAuthStateChanged(async user=>{
+    currentUser = user;
+    if(user){
+      showLoggedIn(user);
+      await registerTechnicianLogin(user);
+      await loadOffersFromFirestore();
+    }else{
+      offers = [];
+      currentId = null;
+      showLoggedOut();
+      refreshAll();
+    }
+  });
+}
+
+
+
 function capFirst(s=""){
   s = String(s || "").trim();
   if(!s) return "";
@@ -11,7 +165,13 @@ function limitForPdf(items, max=7){
   return items.slice(0, max);
 }
 
-const STORAGE_KEY="radar_emprego_clds5g_ofertas_v1";const demoOffers=[{id:crypto.randomUUID(),titulo:"Analista de Laboratório (m/f/x)",entidade:"Randstad Portugal",localidade:"Seia",concelho:"Seia",fonte:"Randstad",referencia:"OTS-2026-175314",link:"https://www.randstad.pt/empregos/analista-de-laboratorio-mfx_seia_OTS-2026-175314/",dataOferta:"",dataConsulta:"2026-04-30",dataLimite:"2026-05-21",contrato:"Temporário",horario:"08h00–17h00",remuneracao:"Vencimento base + subsídio de alimentação",estado:"pendente",dataInativacao:"",motivoInativacao:"",dataValidacao:"",dataExportPdf:"",dataExportFacebook:"",importadaPor:"Técnico não identificado",validadaPor:"",exportPdfPor:"",exportFacebookPor:"",inativadaPor:"",contacto:"Candidatura através da página da oferta em randstad.pt",origemContacto:"Candidatura apenas pela plataforma",resumoFacebook:"Oferta na área da indústria, em Seia. Perfil com responsabilidade, rigor, conhecimentos de inglês e disponibilidade para horário 08h00–17h00. Apoio do CLDS disponível para candidatura.",funcoes:"Realização de análises laboratoriais; operações de suporte em produtos, matérias-primas e processos; registo e interpretação de dados; comunicação de resultados à produção; apoio na manutenção, limpeza e calibração de equipamentos laboratoriais; higienização de instrumentos, equipamentos e instalações.",requisitos:"Residência na zona de Seia; espírito de equipa, planeamento e organização; responsabilidade e rigor; conhecimentos de inglês; formação em Química, Biotecnologia, Bioquímica, Alimentar ou similar, preferencial; experiência em funções similares, preferencial.",condicoes:"Tipo de contrato: temporário; horário: 08h00–17h00; benefícios: vencimento base + subsídio de alimentação; data limite de candidatura: 21-05-2026.",observacoes:"Dados de teste do protótipo. Antes de publicar, confirmar novamente se a oferta continua ativa."}];let offers=loadOffers();let currentId=offers[0]?.id||null;function loadOffers(){const raw=localStorage.getItem(STORAGE_KEY);if(!raw){localStorage.setItem(STORAGE_KEY,JSON.stringify(demoOffers));return structuredClone(demoOffers)}try{return JSON.parse(raw)}catch{return structuredClone(demoOffers)}}function saveOffers(){localStorage.setItem(STORAGE_KEY,JSON.stringify(offers));refreshAll()}function $(id){return document.getElementById(id)}function esc(s=""){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}function bullets(text=""){return String(text).split(/;|\n/).map(x=>x.trim()).filter(Boolean)}function todayPT(){return new Date().toISOString().slice(0,10)}function formatDate(d){if(!d)return"Não indicado";const[y,m,day]=d.split("-");return`${day}-${m}-${y}`}document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>showView(btn.dataset.view)));document.querySelectorAll("[data-go]").forEach(btn=>btn.addEventListener("click",()=>showView(btn.dataset.go)));function showView(id){document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.view===id));document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===id));if(id==="ofertas")renderTable();if(id==="facebook")renderSelects();if(id==="pdf")renderSelects();if(id==="editor")loadForm(currentId)}$("btnNovaOferta").addEventListener("click",()=>createBlankOffer());$("btnAddManual").addEventListener("click",()=>createBlankOffer());function createBlankOffer(){const o={id:crypto.randomUUID(),titulo:"",entidade:"",localidade:"",concelho:"Seia",fonte:"",referencia:"",link:"",dataOferta:"",dataConsulta:todayPT(),dataLimite:"",contrato:"",horario:"",remuneracao:"",estado:"pendente",dataInativacao:"",motivoInativacao:"",dataValidacao:"",dataExportPdf:"",dataExportFacebook:"",importadaPor:"Técnico não identificado",validadaPor:"",exportPdfPor:"",exportFacebookPor:"",inativadaPor:"",contacto:"",origemContacto:"",resumoFacebook:"",funcoes:"",requisitos:"",condicoes:"",observacoes:""};offers.unshift(o);currentId=o.id;saveOffers();showView("editor")}function refreshAll(){renderStats();renderTable();renderSelects();loadForm(currentId)}function renderStats(){$("statTotal").textContent=offers.length;$("statAtivas").textContent=offers.filter(o=>o.estado==="ativa").length;$("statPendentes").textContent=offers.filter(o=>o.estado==="pendente").length;$("statExcluidas").textContent=offers.filter(o=>o.estado==="inativa").length}function mesAnoFromISO(date){
+const STORAGE_KEY="radar_emprego_clds5g_ofertas_v1";const demoOffers=[{id:crypto.randomUUID(),titulo:"Analista de Laboratório (m/f/x)",entidade:"Randstad Portugal",localidade:"Seia",concelho:"Seia",fonte:"Randstad",referencia:"OTS-2026-175314",link:"https://www.randstad.pt/empregos/analista-de-laboratorio-mfx_seia_OTS-2026-175314/",dataOferta:"",dataConsulta:"2026-04-30",dataLimite:"2026-05-21",contrato:"Temporário",horario:"08h00–17h00",remuneracao:"Vencimento base + subsídio de alimentação",estado:"pendente",dataInativacao:"",motivoInativacao:"",dataValidacao:"",dataExportPdf:"",dataExportFacebook:"",importadaPor:tecnicoAtual(),validadaPor:"",exportPdfPor:"",exportFacebookPor:"",inativadaPor:"",contacto:"Candidatura através da página da oferta em randstad.pt",origemContacto:"Candidatura apenas pela plataforma",resumoFacebook:"Oferta na área da indústria, em Seia. Perfil com responsabilidade, rigor, conhecimentos de inglês e disponibilidade para horário 08h00–17h00. Apoio do CLDS disponível para candidatura.",funcoes:"Realização de análises laboratoriais; operações de suporte em produtos, matérias-primas e processos; registo e interpretação de dados; comunicação de resultados à produção; apoio na manutenção, limpeza e calibração de equipamentos laboratoriais; higienização de instrumentos, equipamentos e instalações.",requisitos:"Residência na zona de Seia; espírito de equipa, planeamento e organização; responsabilidade e rigor; conhecimentos de inglês; formação em Química, Biotecnologia, Bioquímica, Alimentar ou similar, preferencial; experiência em funções similares, preferencial.",condicoes:"Tipo de contrato: temporário; horário: 08h00–17h00; benefícios: vencimento base + subsídio de alimentação; data limite de candidatura: 21-05-2026.",observacoes:"Dados de teste do protótipo. Antes de publicar, confirmar novamente se a oferta continua ativa."}];let offers=[];let currentId=null;function loadOffers(){const raw=localStorage.getItem(STORAGE_KEY);if(!raw)return [];try{return JSON.parse(raw)}catch{return []}}function saveOffers(){
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(offers));
+  if(firebaseOnline && currentUser){
+    syncOffersToFirestore().catch(err=>console.error("Erro ao sincronizar Firestore:", err));
+  }
+  refreshAll();
+}function $(id){return document.getElementById(id)}function esc(s=""){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}function bullets(text=""){return String(text).split(/;|\n/).map(x=>x.trim()).filter(Boolean)}function todayPT(){return new Date().toISOString().slice(0,10)}function formatDate(d){if(!d)return"Não indicado";const[y,m,day]=d.split("-");return`${day}-${m}-${y}`}document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>showView(btn.dataset.view)));document.querySelectorAll("[data-go]").forEach(btn=>btn.addEventListener("click",()=>showView(btn.dataset.go)));function showView(id){document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.view===id));document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===id));if(id==="ofertas")renderTable();if(id==="facebook")renderSelects();if(id==="pdf")renderSelects();if(id==="editor")loadForm(currentId)}$("btnNovaOferta").addEventListener("click",()=>createBlankOffer());$("btnAddManual").addEventListener("click",()=>createBlankOffer());function createBlankOffer(){const o={id:crypto.randomUUID(),titulo:"",entidade:"",localidade:"",concelho:"Seia",fonte:"",referencia:"",link:"",dataOferta:"",dataConsulta:todayPT(),dataLimite:"",contrato:"",horario:"",remuneracao:"",estado:"pendente",dataInativacao:"",motivoInativacao:"",dataValidacao:"",dataExportPdf:"",dataExportFacebook:"",importadaPor:tecnicoAtual(),validadaPor:"",exportPdfPor:"",exportFacebookPor:"",inativadaPor:"",contacto:"",origemContacto:"",resumoFacebook:"",funcoes:"",requisitos:"",condicoes:"",observacoes:""};offers.unshift(o);currentId=o.id;saveOffers();showView("editor")}function refreshAll(){renderStats();renderTable();renderSelects();loadForm(currentId)}function renderStats(){$("statTotal").textContent=offers.length;$("statAtivas").textContent=offers.filter(o=>o.estado==="ativa").length;$("statPendentes").textContent=offers.filter(o=>o.estado==="pendente").length;$("statExcluidas").textContent=offers.filter(o=>o.estado==="inativa").length}function mesAnoFromISO(date){
   if(!date) return "";
   const [y,m] = String(date).split("-");
   const meses = ["","janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
@@ -107,7 +267,7 @@ function renderTable(){
   }
 }
 function estadoLabel(e){return e==="ativa"?"Ativa":e==="inativa"?"Inativa":e==="excluida"?"Excluída/erro":"Pendente"}
-function editOffer(id){currentId=id;showView("editor")}function goFb(id){currentId=id;showView("facebook");$("selectFacebook").value=id;renderFacebook()}function goPdf(id){currentId=id;showView("pdf");$("selectPdf").value=id;renderPdf()}function getFormData(){const existing=offers.find(x=>x.id===$("offerId").value)||{};return{id:$("offerId").value||crypto.randomUUID(),area:existing.area||"",vagas:existing.vagas||"",titulo:$("titulo").value.trim(),entidade:$("entidade").value.trim(),localidade:$("localidade").value.trim(),concelho:$("concelho").value.trim(),fonte:$("fonte").value.trim(),referencia:$("referencia").value.trim(),link:$("link").value.trim(),dataOferta:$("dataOferta").value,dataConsulta:$("dataConsulta").value,dataLimite:$("dataLimite").value,contrato:$("contrato").value.trim(),horario:$("horario").value.trim(),remuneracao:$("remuneracao").value.trim(),estado:$("estado").value,dataInativacao:existing.dataInativacao||"",motivoInativacao:existing.motivoInativacao||"",dataValidacao:existing.dataValidacao||"",dataExportPdf:existing.dataExportPdf||"",dataExportFacebook:existing.dataExportFacebook||"",importadaPor:existing.importadaPor||"",validadaPor:existing.validadaPor||"",exportPdfPor:existing.exportPdfPor||"",exportFacebookPor:existing.exportFacebookPor||"",inativadaPor:existing.inativadaPor||"",contacto:$("contacto").value.trim(),origemContacto:$("origemContacto").value,resumoFacebook:$("resumoFacebook").value.trim(),funcoes:$("funcoes").value.trim(),requisitos:$("requisitos").value.trim(),condicoes:$("condicoes").value.trim(),observacoes:$("observacoes").value.trim()}}function loadForm(id){const o=offers.find(x=>x.id===id)||offers[0];if(!o)return;currentId=o.id;for(const[k,v]of Object.entries(o)){const el=$(k);if(el)el.value=v||""}$("offerId").value=o.id;renderValidation(o)}$("offerForm").addEventListener("submit",ev=>{ev.preventDefault();const o=getFormData();const idx=offers.findIndex(x=>x.id===o.id);if(idx>=0)offers[idx]=o;else offers.unshift(o);currentId=o.id;saveOffers();alert("Oferta guardada.")});["titulo","localidade","concelho","fonte","link","dataConsulta","estado","contacto","origemContacto"].forEach(id=>{$(id).addEventListener("input",()=>renderValidation(getFormData()))});$("btnValidarAtiva").addEventListener("click",()=>{
+function editOffer(id){currentId=id;showView("editor")}function goFb(id){currentId=id;showView("facebook");$("selectFacebook").value=id;renderFacebook()}function goPdf(id){currentId=id;showView("pdf");$("selectPdf").value=id;renderPdf()}function getFormData(){const existing=offers.find(x=>x.id===$("offerId").value)||{};return{id:$("offerId").value||crypto.randomUUID(),area:existing.area||"",vagas:existing.vagas||"",titulo:$("titulo").value.trim(),entidade:$("entidade").value.trim(),localidade:$("localidade").value.trim(),concelho:$("concelho").value.trim(),fonte:$("fonte").value.trim(),referencia:$("referencia").value.trim(),link:$("link").value.trim(),dataOferta:$("dataOferta").value,dataConsulta:$("dataConsulta").value,dataLimite:$("dataLimite").value,contrato:$("contrato").value.trim(),horario:$("horario").value.trim(),remuneracao:$("remuneracao").value.trim(),estado:$("estado").value,dataInativacao:existing.dataInativacao||"",motivoInativacao:existing.motivoInativacao||"",dataValidacao:existing.dataValidacao||"",dataExportPdf:existing.dataExportPdf||"",dataExportFacebook:existing.dataExportFacebook||"",importadaPor:existing.importadaPor||tecnicoAtual(),validadaPor:existing.validadaPor||"",exportPdfPor:existing.exportPdfPor||"",exportFacebookPor:existing.exportFacebookPor||"",inativadaPor:existing.inativadaPor||"",contacto:$("contacto").value.trim(),origemContacto:$("origemContacto").value,resumoFacebook:$("resumoFacebook").value.trim(),funcoes:$("funcoes").value.trim(),requisitos:$("requisitos").value.trim(),condicoes:$("condicoes").value.trim(),observacoes:$("observacoes").value.trim()}}function loadForm(id){const o=offers.find(x=>x.id===id)||offers[0];if(!o)return;currentId=o.id;for(const[k,v]of Object.entries(o)){const el=$(k);if(el)el.value=v||""}$("offerId").value=o.id;renderValidation(o)}$("offerForm").addEventListener("submit",ev=>{ev.preventDefault();const o=getFormData();const idx=offers.findIndex(x=>x.id===o.id);if(idx>=0)offers[idx]=o;else offers.unshift(o);currentId=o.id;saveOffers();alert("Oferta guardada.")});["titulo","localidade","concelho","fonte","link","dataConsulta","estado","contacto","origemContacto"].forEach(id=>{$(id).addEventListener("input",()=>renderValidation(getFormData()))});$("btnValidarAtiva").addEventListener("click",()=>{
   const o=getFormData();
   const v=validationSummary(o);
   if(!v.ok){alert("A oferta ainda não cumpre os critérios para ser validada:\n\n"+v.issues.join("\n"));return}
@@ -115,7 +275,7 @@ function editOffer(id){currentId=id;showView("editor")}function goFb(id){current
   const idx=offers.findIndex(x=>x.id===o.id);
   o.estado="ativa";
   o.dataValidacao=todayPT();
-  o.validadaPor=o.validadaPor||"Técnico não identificado";
+  o.validadaPor=tecnicoAtual();
   if(idx>=0){offers[idx]=o;currentId=o.id;saveOffers();loadForm(o.id);alert("Oferta validada como ativa.");}
   else $("offerForm").requestSubmit();
 });$("btnInativar").addEventListener("click",()=>{
@@ -128,7 +288,7 @@ function editOffer(id){currentId=id;showView("editor")}function goFb(id){current
     o.estado="inativa";
     o.dataInativacao=todayPT();
     o.motivoInativacao=motivo;
-    o.inativadaPor=o.inativadaPor||"Técnico não identificado";
+    o.inativadaPor=tecnicoAtual();
     offers[idx]=o;
     currentId=o.id;
     saveOffers();
@@ -152,7 +312,7 @@ function markActive(id){
   if(idx<0) return;
   offers[idx].estado="ativa";
   offers[idx].dataValidacao=todayPT();
-  offers[idx].validadaPor=offers[idx].validadaPor||"Técnico não identificado";
+  offers[idx].validadaPor=tecnicoAtual();
   currentId=id;
   saveOffers();
   renderTable();
@@ -164,7 +324,7 @@ function quickInactivate(id){
   offers[idx].estado="inativa";
   offers[idx].dataInativacao=todayPT();
   offers[idx].motivoInativacao=motivo;
-  offers[idx].inativadaPor=offers[idx].inativadaPor||"Técnico não identificado";
+  offers[idx].inativadaPor=tecnicoAtual();
   currentId=id;
   saveOffers();
   renderTable();
@@ -174,11 +334,11 @@ function registerExport(id, type){
   if(idx<0) return;
   if(type==="pdf"){
     offers[idx].dataExportPdf=todayPT();
-    offers[idx].exportPdfPor=offers[idx].exportPdfPor||"Técnico não identificado";
+    offers[idx].exportPdfPor=tecnicoAtual();
   }
   if(type==="facebook"){
     offers[idx].dataExportFacebook=todayPT();
-    offers[idx].exportFacebookPor=offers[idx].exportFacebookPor||"Técnico não identificado";
+    offers[idx].exportFacebookPor=tecnicoAtual();
   }
   saveOffers();
 }
@@ -546,7 +706,7 @@ function renderPdf(){
   applyEmbeddedAssetsToPreview($("pdfPreview"));
 }
 
-function printView(id){document.querySelectorAll(".view").forEach(v=>v.classList.remove("printing"));$(id).classList.add("printing");window.print();setTimeout(()=>$(id).classList.remove("printing"),500)}$("btnSimularPesquisa").addEventListener("click",()=>{const fonte=$("fFonte").value,loc=$("fLocalidade").value||"Seia";$("resultadosPesquisa").innerHTML=`<h3>Resultados da pesquisa</h3><p>A pesquisa automática será ligada aos conetores configurados. Até essa ligação estar ativa, pode importar manualmente ofertas copiadas das plataformas autorizadas.</p><div class="found"><div><h4>Pesquisa em ${esc(fonte)}</h4><p>Local: ${esc(loc)} · Estado: pendente de validação humana</p></div><button class="primary" id="btnImportFake">Criar oferta para validação</button></div>`;$("btnImportFake").addEventListener("click",()=>{const o={id:crypto.randomUUID(),titulo:"Oferta importada para validação",entidade:"",localidade:loc,concelho:loc,fonte:fonte,referencia:"",link:"",dataOferta:"",dataConsulta:todayPT(),dataLimite:"",contrato:"",horario:"",remuneracao:"",estado:"pendente",dataInativacao:"",motivoInativacao:"",dataValidacao:"",dataExportPdf:"",dataExportFacebook:"",importadaPor:"Técnico não identificado",validadaPor:"",exportPdfPor:"",exportFacebookPor:"",inativadaPor:"",contacto:"",origemContacto:"",resumoFacebook:"",funcoes:"",requisitos:"",condicoes:"",observacoes:"Resultado simulado. Substituir por dados reais e verificáveis."};offers.unshift(o);currentId=o.id;saveOffers();showView("editor")})});refreshAll();renderFacebook();renderPdf();
+function printView(id){document.querySelectorAll(".view").forEach(v=>v.classList.remove("printing"));$(id).classList.add("printing");window.print();setTimeout(()=>$(id).classList.remove("printing"),500)}$("btnSimularPesquisa").addEventListener("click",()=>{const fonte=$("fFonte").value,loc=$("fLocalidade").value||"Seia";$("resultadosPesquisa").innerHTML=`<h3>Resultados da pesquisa</h3><p>A pesquisa automática será ligada aos conetores configurados. Até essa ligação estar ativa, pode importar manualmente ofertas copiadas das plataformas autorizadas.</p><div class="found"><div><h4>Pesquisa em ${esc(fonte)}</h4><p>Local: ${esc(loc)} · Estado: pendente de validação humana</p></div><button class="primary" id="btnImportFake">Criar oferta para validação</button></div>`;$("btnImportFake").addEventListener("click",()=>{const o={id:crypto.randomUUID(),titulo:"Oferta importada para validação",entidade:"",localidade:loc,concelho:loc,fonte:fonte,referencia:"",link:"",dataOferta:"",dataConsulta:todayPT(),dataLimite:"",contrato:"",horario:"",remuneracao:"",estado:"pendente",dataInativacao:"",motivoInativacao:"",dataValidacao:"",dataExportPdf:"",dataExportFacebook:"",importadaPor:tecnicoAtual(),validadaPor:"",exportPdfPor:"",exportFacebookPor:"",inativadaPor:"",contacto:"",origemContacto:"",resumoFacebook:"",funcoes:"",requisitos:"",condicoes:"",observacoes:"Resultado simulado. Substituir por dados reais e verificáveis."};offers.unshift(o);currentId=o.id;saveOffers();showView("editor")})});refreshAll();renderFacebook();renderPdf();
 
 
 
@@ -1116,7 +1276,7 @@ function clearAllOffersV8(){
   if(confirm("Tem a certeza que quer limpar todas as ofertas registadas?")){
     offers = [];
     currentId = null;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(offers));
+    saveOffers();
     renderStats();
     renderTable();
     renderSelects();
@@ -1170,3 +1330,7 @@ document.addEventListener("keydown", ev=>{
   }
 });
 
+
+
+document.addEventListener('DOMContentLoaded', initFirebaseApp);
+if(document.readyState !== 'loading') initFirebaseApp();
